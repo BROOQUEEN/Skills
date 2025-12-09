@@ -1,0 +1,258 @@
+<div class="container">
+    <a href="#" class="back-button">← Назад к списку тем</a>
+    
+    <div class="page-header">
+        <h1>🌳 Работа с DOM</h1>
+        <p>Выбор элементов, манипуляции с DOM, создание элементов, оптимизация производительности</p>
+    </div>
+
+    <div class="content-section">
+        <h2>Выбор элементов</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 1: Методы выбора элементов</span>
+            <pre><code><span class="comment">// getElementById - один элемент по ID</span>
+<span class="keyword">const</span> <span class="variable">element</span> = <span class="function">document</span>.<span class="function">getElementById</span>(<span class="string">"myId"</span>);
+
+<span class="comment">// getElementsByClassName - коллекция элементов</span>
+<span class="keyword">const</span> <span class="variable">elements</span> = <span class="function">document</span>.<span class="function">getElementsByClassName</span>(<span class="string">"myClass"</span>);
+
+<span class="comment">// getElementsByTagName - по тегу</span>
+<span class="keyword">const</span> <span class="variable">divs</span> = <span class="function">document</span>.<span class="function">getElementsByTagName</span>(<span class="string">"div"</span>);
+
+<span class="comment">// querySelector - первый элемент (CSS селектор)</span>
+<span class="keyword">const</span> <span class="variable">first</span> = <span class="function">document</span>.<span class="function">querySelector</span>(<span class="string">".myClass"</span>);
+<span class="keyword">const</span> <span class="variable">byId</span> = <span class="function">document</span>.<span class="function">querySelector</span>(<span class="string">"#myId"</span>);
+<span class="keyword">const</span> <span class="variable">complex</span> = <span class="function">document</span>.<span class="function">querySelector</span>(<span class="string">"div.container > p.active"</span>);
+
+<span class="comment">// querySelectorAll - все элементы (возвращает NodeList)</span>
+<span class="keyword">const</span> <span class="variable">all</span> = <span class="function">document</span>.<span class="function">querySelectorAll</span>(<span class="string">".myClass"</span>);
+<span class="variable">all</span>.<span class="function">forEach</span>(<span class="variable">el</span> =&gt; <span class="function">console</span>.<span class="function">log</span>(<span class="variable">el</span>));
+
+<span class="comment">// Поиск внутри элемента</span>
+<span class="keyword">const</span> <span class="variable">container</span> = <span class="function">document</span>.<span class="function">querySelector</span>(<span class="string">".container"</span>);
+<span class="keyword">const</span> <span class="variable">inner</span> = <span class="variable">container</span>.<span class="function">querySelector</span>(<span class="string">".inner"</span>);</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Манипуляции с элементами</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 2: Изменение содержимого</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">element</span> = <span class="function">document</span>.<span class="function">querySelector</span>(<span class="string">"#myElement"</span>);
+
+<span class="comment">// textContent - только текст (безопасно)</span>
+<span class="variable">element</span>.<span class="variable">textContent</span> = <span class="string">"Новый текст"</span>;
+
+<span class="comment">// innerHTML - HTML содержимое (может быть опасно!)</span>
+<span class="variable">element</span>.<span class="variable">innerHTML</span> = <span class="string">"&lt;strong&gt;Жирный текст&lt;/strong&gt;"</span>;
+
+<span class="comment">// innerText - видимый текст</span>
+<span class="variable">element</span>.<span class="variable">innerText</span> = <span class="string">"Видимый текст"</span>;
+
+<span class="comment">// outerHTML - элемент со своим тегом</span>
+<span class="variable">element</span>.<span class="variable">outerHTML</span> = <span class="string">"&lt;div&gt;Новый элемент&lt;/div&gt;"</span>;</code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 3: Работа с атрибутами</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">img</span> = <span class="function">document</span>.<span class="function">querySelector</span>(<span class="string">"img"</span>);
+
+<span class="comment">// Получение атрибута</span>
+<span class="keyword">const</span> <span class="variable">src</span> = <span class="variable">img</span>.<span class="function">getAttribute</span>(<span class="string">"src"</span>);
+
+<span class="comment">// Установка атрибута</span>
+<span class="variable">img</span>.<span class="function">setAttribute</span>(<span class="string">"src"</span>, <span class="string">"new-image.jpg"</span>);
+<span class="variable">img</span>.<span class="function">setAttribute</span>(<span class="string">"alt"</span>, <span class="string">"Описание"</span>);
+
+<span class="comment">// Удаление атрибута</span>
+<span class="variable">img</span>.<span class="function">removeAttribute</span>(<span class="string">"alt"</span>);
+
+<span class="comment">// Проверка наличия</span>
+<span class="keyword">if</span> (<span class="variable">img</span>.<span class="function">hasAttribute</span>(<span class="string">"src"</span>)) {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Есть атрибут src"</span>);
+}
+
+<span class="comment">// data-атрибуты</span>
+<span class="variable">img</span>.<span class="function">setAttribute</span>(<span class="string">"data-user-id"</span>, <span class="string">"123"</span>);
+<span class="keyword">const</span> <span class="variable">userId</span> = <span class="variable">img</span>.<span class="variable">dataset</span>.<span class="variable">userId</span>;  <span class="comment">// "123" (автоматически из data-user-id)</span>
+<span class="variable">img</span>.<span class="variable">dataset</span>.<span class="variable">userRole</span> = <span class="string">"admin"</span>;  <span class="comment">// Устанавливает data-user-role="admin"</span>
+
+<span class="comment">// Прямой доступ к стандартным атрибутам</span>
+<span class="variable">img</span>.<span class="variable">src</span> = <span class="string">"new-image.jpg"</span>;
+<span class="variable">img</span>.<span class="variable">alt</span> = <span class="string">"Описание"</span>;
+<span class="variable">img</span>.<span class="variable">className</span> = <span class="string">"new-class"</span>;  <span class="comment">// Или classList</span>
+<span class="variable">img</span>.<span class="variable">id</span> = <span class="string">"newId"</span>;</code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 4: Работа с классами</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">element</span> = <span class="function">document</span>.<span class="function">querySelector</span>(<span class="string">".myElement"</span>);
+
+<span class="comment">// classList - современный способ</span>
+<span class="variable">element</span>.<span class="variable">classList</span>.<span class="function">add</span>(<span class="string">"active"</span>);
+<span class="variable">element</span>.<span class="variable">classList</span>.<span class="function">remove</span>(<span class="string">"active"</span>);
+<span class="variable">element</span>.<span class="variable">classList</span>.<span class="function">toggle</span>(<span class="string">"active"</span>);  <span class="comment">// Добавить если нет, удалить если есть</span>
+<span class="variable">element</span>.<span class="variable">classList</span>.<span class="function">contains</span>(<span class="string">"active"</span>);  <span class="comment">// true/false</span>
+<span class="variable">element</span>.<span class="variable">classList</span>.<span class="function">replace</span>(<span class="string">"old"</span>, <span class="string">"new"</span>);
+
+<span class="comment">// Старый способ (менее удобный)</span>
+<span class="variable">element</span>.<span class="variable">className</span> = <span class="string">"class1 class2"</span>;  <span class="comment">// Заменяет все классы</span>
+<span class="variable">element</span>.<span class="variable">className</span> += <span class="string">" class3"</span>;  <span class="comment">// Добавляет</span></code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 5: Стили</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">element</span> = <span class="function">document</span>.<span class="function">querySelector</span>(<span class="string">".myElement"</span>);
+
+<span class="comment">// Прямое изменение стиля</span>
+<span class="variable">element</span>.<span class="variable">style</span>.<span class="variable">color</span> = <span class="string">"red"</span>;
+<span class="variable">element</span>.<span class="variable">style</span>.<span class="variable">backgroundColor</span> = <span class="string">"blue"</span>;  <span class="comment">// camelCase!</span>
+<span class="variable">element</span>.<span class="variable">style</span>.<span class="variable">fontSize</span> = <span class="string">"20px"</span>;
+
+<span class="comment">// Через setProperty</span>
+<span class="variable">element</span>.<span class="variable">style</span>.<span class="function">setProperty</span>(<span class="string">"color"</span>, <span class="string">"red"</span>);
+<span class="variable">element</span>.<span class="variable">style</span>.<span class="function">setProperty</span>(<span class="string">"--custom-property"</span>, <span class="string">"value"</span>);  <span class="comment">// CSS переменные</span>
+
+<span class="comment">// Получение вычисленных стилей</span>
+<span class="keyword">const</span> <span class="variable">computed</span> = <span class="function">window</span>.<span class="function">getComputedStyle</span>(<span class="variable">element</span>);
+<span class="keyword">const</span> <span class="variable">color</span> = <span class="variable">computed</span>.<span class="function">getPropertyValue</span>(<span class="string">"color"</span>);</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Создание и добавление элементов</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 6: Создание элементов</span>
+            <pre><code><span class="comment">// createElement</span>
+<span class="keyword">const</span> <span class="variable">div</span> = <span class="function">document</span>.<span class="function">createElement</span>(<span class="string">"div"</span>);
+<span class="variable">div</span>.<span class="variable">textContent</span> = <span class="string">"Новый элемент"</span>;
+<span class="variable">div</span>.<span class="variable">className</span> = <span class="string">"my-class"</span>;
+
+<span class="comment">// Добавление в DOM</span>
+<span class="keyword">const</span> <span class="variable">container</span> = <span class="function">document</span>.<span class="function">querySelector</span>(<span class="string">".container"</span>);
+<span class="variable">container</span>.<span class="function">appendChild</span>(<span class="variable">div</span>);  <span class="comment">// В конец</span>
+
+<span class="comment">// Современные методы (ES2015+)</span>
+<span class="variable">container</span>.<span class="function">append</span>(<span class="variable">div</span>);        <span class="comment">// В конец (можно несколько)</span>
+<span class="variable">container</span>.<span class="function">prepend</span>(<span class="variable">div</span>);       <span class="comment">// В начало</span>
+<span class="variable">container</span>.<span class="function">before</span>(<span class="variable">div</span>);       <span class="comment">// Перед контейнером</span>
+<span class="variable">container</span>.<span class="function">after</span>(<span class="variable">div</span>);        <span class="comment">// После контейнера</span>
+
+<span class="comment">// insertBefore - вставка перед определенным элементом</span>
+<span class="keyword">const</span> <span class="variable">reference</span> = <span class="variable">container</span>.<span class="function">querySelector</span>(<span class="string">".reference"</span>);
+<span class="variable">container</span>.<span class="function">insertBefore</span>(<span class="variable">div</span>, <span class="variable">reference</span>);
+
+<span class="comment">// replaceWith - замена элемента</span>
+<span class="variable">oldElement</span>.<span class="function">replaceWith</span>(<span class="variable">div</span>);</code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 7: Удаление элементов</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">element</span> = <span class="function">document</span>.<span class="function">querySelector</span>(<span class="string">".to-remove"</span>);
+
+<span class="comment">// remove() - современный способ</span>
+<span class="variable">element</span>.<span class="function">remove</span>();
+
+<span class="comment">// Старый способ</span>
+<span class="variable">element</span>.<span class="variable">parentNode</span>.<span class="function">removeChild</span>(<span class="variable">element</span>);
+
+<span class="comment">// Удаление всех дочерних элементов</span>
+<span class="keyword">const</span> <span class="variable">container</span> = <span class="function">document</span>.<span class="function">querySelector</span>(<span class="string">".container"</span>);
+<span class="variable">container</span>.<span class="variable">innerHTML</span> = <span class="string">""</span>;  <span class="comment">// Простой способ</span>
+<span class="comment">// или</span>
+<span class="keyword">while</span> (<span class="variable">container</span>.<span class="variable">firstChild</span>) {
+    <span class="variable">container</span>.<span class="function">removeChild</span>(<span class="variable">container</span>.<span class="variable">firstChild</span>);
+}</code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 8: Клонирование элементов</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">original</span> = <span class="function">document</span>.<span class="function">querySelector</span>(<span class="string">".original"</span>);
+
+<span class="comment">// Поверхностное клонирование</span>
+<span class="keyword">const</span> <span class="variable">clone</span> = <span class="variable">original</span>.<span class="function">cloneNode</span>(<span class="keyword">false</span>);  <span class="comment">// Только элемент</span>
+
+<span class="comment">// Глубокое клонирование</span>
+<span class="keyword">const</span> <span class="variable">deepClone</span> = <span class="variable">original</span>.<span class="function">cloneNode</span>(<span class="keyword">true</span>);  <span class="comment">// С дочерними элементами</span>
+
+<span class="variable">container</span>.<span class="function">append</span>(<span class="variable">deepClone</span>);</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Навигация по DOM</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 9: Навигация</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">element</span> = <span class="function">document</span>.<span class="function">querySelector</span>(<span class="string">".myElement"</span>);
+
+<span class="comment">// Родитель</span>
+<span class="keyword">const</span> <span class="variable">parent</span> = <span class="variable">element</span>.<span class="variable">parentNode</span>;  <span class="comment">// или parentElement</span>
+
+<span class="comment">// Дети</span>
+<span class="keyword">const</span> <span class="variable">children</span> = <span class="variable">element</span>.<span class="variable">children</span>;      <span class="comment">// Только элементы (HTMLCollection)</span>
+<span class="keyword">const</span> <span class="variable">childNodes</span> = <span class="variable">element</span>.<span class="variable">childNodes</span>;  <span class="comment">// Все узлы (текст, комментарии и т.д.)</span>
+<span class="keyword">const</span> <span class="variable">first</span> = <span class="variable">element</span>.<span class="variable">firstElementChild</span>;
+<span class="keyword">const</span> <span class="variable">last</span> = <span class="variable">element</span>.<span class="variable">lastElementChild</span>;
+
+<span class="comment">// Соседи</span>
+<span class="keyword">const</span> <span class="variable">next</span> = <span class="variable">element</span>.<span class="variable">nextElementSibling</span>;
+<span class="keyword">const</span> <span class="variable">prev</span> = <span class="variable">element</span>.<span class="variable">previousElementSibling</span>;
+
+<span class="comment">// Поиск вверх по дереву</span>
+<span class="keyword">const</span> <span class="variable">closest</span> = <span class="variable">element</span>.<span class="function">closest</span>(<span class="string">".container"</span>);  <span class="comment">// Ближайший родитель, соответствующий селектору</span>
+
+<span class="comment">// Проверка вхождения</span>
+<span class="keyword">const</span> <span class="variable">container</span> = <span class="function">document</span>.<span class="function">querySelector</span>(<span class="string">".container"</span>);
+<span class="keyword">const</span> <span class="variable">isInside</span> = <span class="variable">container</span>.<span class="function">contains</span>(<span class="variable">element</span>);  <span class="comment">// true/false</span></code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Оптимизация производительности</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 10: Best Practices</span>
+            <pre><code><span class="comment">// Плохо: множественные запросы</span>
+<span class="function">document</span>.<span class="function">querySelector</span>(<span class="string">".item"</span>).<span class="variable">style</span>.<span class="variable">color</span> = <span class="string">"red"</span>;
+<span class="function">document</span>.<span class="function">querySelector</span>(<span class="string">".item"</span>).<span class="variable">style</span>.<span class="variable">fontSize</span> = <span class="string">"20px"</span>;
+
+<span class="comment">// Хорошо: кеширование ссылки</span>
+<span class="keyword">const</span> <span class="variable">item</span> = <span class="function">document</span>.<span class="function">querySelector</span>(<span class="string">".item"</span>);
+<span class="variable">item</span>.<span class="variable">style</span>.<span class="variable">color</span> = <span class="string">"red"</span>;
+<span class="variable">item</span>.<span class="variable">style</span>.<span class="variable">fontSize</span> = <span class="string">"20px"</span>;
+
+<span class="comment">// Еще лучше: изменение класса</span>
+<span class="variable">item</span>.<span class="variable">classList</span>.<span class="function">add</span>(<span class="string">"highlighted"</span>);
+
+<span class="comment">// Fragment для массового добавления</span>
+<span class="keyword">const</span> <span class="variable">fragment</span> = <span class="function">document</span>.<span class="function">createDocumentFragment</span>();
+<span class="keyword">for</span> (<span class="keyword">let</span> <span class="variable">i</span> = <span class="number">0</span>; <span class="variable">i</span> &lt; <span class="number">100</span>; <span class="variable">i</span>++) {
+    <span class="keyword">const</span> <span class="variable">div</span> = <span class="function">document</span>.<span class="function">createElement</span>(<span class="string">"div"</span>);
+    <span class="variable">div</span>.<span class="variable">textContent</span> = <span class="variable">i</span>;
+    <span class="variable">fragment</span>.<span class="function">appendChild</span>(<span class="variable">div</span>);
+}
+<span class="variable">container</span>.<span class="function">appendChild</span>(<span class="variable">fragment</span>);  <span class="comment">// Один reflow вместо 100!</span>
+
+<span class="comment">// Batch DOM чтения/записи</span>
+<span class="comment">// Плохо: чередование чтения и записи вызывает множественные reflow</span>
+<span class="keyword">for</span> (<span class="keyword">let</span> <span class="variable">item</span> <span class="keyword">of</span> <span class="variable">items</span>) {
+    <span class="variable">item</span>.<span class="variable">style</span>.<span class="variable">height</span> = <span class="variable">item</span>.<span class="variable">offsetHeight</span> + <span class="number">10</span> + <span class="string">"px"</span>;  <span class="comment">// Чтение и запись</span>
+}
+
+<span class="comment">// Хорошо: сначала все чтения, потом все записи</span>
+<span class="keyword">const</span> <span class="variable">heights</span> = <span class="variable">items</span>.<span class="function">map</span>(<span class="variable">item</span> =&gt; <span class="variable">item</span>.<span class="variable">offsetHeight</span>);
+<span class="variable">items</span>.<span class="function">forEach</span>((<span class="variable">item</span>, <span class="variable">i</span>) =&gt; {
+    <span class="variable">item</span>.<span class="variable">style</span>.<span class="variable">height</span> = <span class="variable">heights</span>[<span class="variable">i</span>] + <span class="number">10</span> + <span class="string">"px"</span>;
+});</code></pre>
+        </div>
+
+        <div class="warning">
+            <strong>Внимание:</strong> Избегайте использования innerHTML с пользовательскими данными без очистки - это может привести к XSS атакам. Используйте textContent для текста или очищайте данные перед вставкой.
+        </div>
+    </div>
+</div>
+

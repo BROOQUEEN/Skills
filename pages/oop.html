@@ -1,0 +1,186 @@
+<div class="container">
+    <a href="#" class="back-button">← Назад к списку тем</a>
+    
+    <div class="page-header">
+        <h1>🏛️ ООП в JavaScript</h1>
+        <p>Классы, наследование, инкапсуляция, полиморфизм и принципы объектно-ориентированного программирования</p>
+    </div>
+
+    <div class="content-section">
+        <h2>Принципы ООП</h2>
+        <p>ООП базируется на четырех основных принципах:</p>
+        <ul>
+            <li><strong>Инкапсуляция</strong> - скрытие внутренних деталей реализации</li>
+            <li><strong>Наследование</strong> - создание новых классов на основе существующих</li>
+            <li><strong>Полиморфизм</strong> - способность объектов разных типов обрабатываться одинаково</li>
+            <li><strong>Абстракция</strong> - упрощение сложных систем</li>
+        </ul>
+    </div>
+
+    <div class="content-section">
+        <h2>Классы ES6</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 1: Базовый класс</span>
+            <pre><code><span class="keyword">class</span> <span class="class-name">Animal</span> {
+    <span class="comment">// Приватные поля (ES2022)</span>
+    #<span class="variable">energy</span> = <span class="number">100</span>;
+    
+    <span class="comment">// Публичные поля</span>
+    <span class="variable">name</span>;
+    <span class="variable">age</span> = <span class="number">0</span>;
+    
+    <span class="function">constructor</span>(<span class="variable">name</span>, <span class="variable">age</span>) {
+        <span class="keyword">this</span>.<span class="variable">name</span> = <span class="variable">name</span>;
+        <span class="keyword">this</span>.<span class="variable">age</span> = <span class="variable">age</span>;
+    }
+    
+    <span class="comment">// Публичный метод</span>
+    <span class="function">speak</span>() {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">`${this.name} издает звук`</span>);
+    }
+    
+    <span class="comment">// Приватный метод</span>
+    #<span class="function">decreaseEnergy</span>(<span class="variable">amount</span>) {
+        <span class="keyword">this</span>.#<span class="variable">energy</span> -= <span class="variable">amount</span>;
+    }
+    
+    <span class="function">move</span>() {
+        <span class="keyword">this</span>.#<span class="function">decreaseEnergy</span>(<span class="number">10</span>);
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">`${this.name} движется`</span>);
+    }
+    
+    <span class="keyword">get</span> <span class="function">energy</span>() {
+        <span class="keyword">return</span> <span class="keyword">this</span>.#<span class="variable">energy</span>;
+    }
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Наследование</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 2: Наследование классов</span>
+            <pre><code><span class="keyword">class</span> <span class="class-name">Dog</span> <span class="keyword">extends</span> <span class="class-name">Animal</span> {
+    <span class="variable">breed</span>;
+    
+    <span class="function">constructor</span>(<span class="variable">name</span>, <span class="variable">age</span>, <span class="variable">breed</span>) {
+        <span class="keyword">super</span>(<span class="variable">name</span>, <span class="variable">age</span>);  <span class="comment">// Вызов конструктора родителя</span>
+        <span class="keyword">this</span>.<span class="variable">breed</span> = <span class="variable">breed</span>;
+    }
+    
+    <span class="comment">// Переопределение метода (полиморфизм)</span>
+    <span class="function">speak</span>() {
+        <span class="function">super</span>.<span class="function">speak</span>();  <span class="comment">// Вызов метода родителя</span>
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Гав!"</span>);
+    }
+    
+    <span class="comment">// Новый метод</span>
+    <span class="function">fetch</span>() {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">`${this.name} принес палку`</span>);
+        <span class="keyword">this</span>.<span class="function">move</span>();
+    }
+}
+
+<span class="keyword">const</span> <span class="variable">dog</span> = <span class="keyword">new</span> <span class="function">Dog</span>(<span class="string">"Барсик"</span>, <span class="number">3</span>, <span class="string">"лабрадор"</span>);
+<span class="variable">dog</span>.<span class="function">speak</span>();  <span class="comment">// "Барсик издает звук" + "Гав!"</span>
+<span class="variable">dog</span>.<span class="function">fetch</span>();</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Статические методы и свойства</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 3: Статические члены</span>
+            <pre><code><span class="keyword">class</span> <span class="class-name">MathUtils</span> {
+    <span class="keyword">static</span> <span class="variable">PI</span> = <span class="number">3.14159</span>;
+    
+    <span class="keyword">static</span> <span class="function">add</span>(<span class="variable">a</span>, <span class="variable">b</span>) {
+        <span class="keyword">return</span> <span class="variable">a</span> + <span class="variable">b</span>;
+    }
+    
+    <span class="keyword">static</span> <span class="function">multiply</span>(<span class="variable">a</span>, <span class="variable">b</span>) {
+        <span class="keyword">return</span> <span class="variable">a</span> * <span class="variable">b</span>;
+    }
+}
+
+<span class="comment">// Использование без создания экземпляра</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">MathUtils</span>.<span class="variable">PI</span>);
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">MathUtils</span>.<span class="function">add</span>(<span class="number">2</span>, <span class="number">3</span>));</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Абстрактные классы (через наследование)</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 4: Паттерн абстрактного класса</span>
+            <pre><code><span class="keyword">class</span> <span class="class-name">Shape</span> {
+    <span class="function">constructor</span>(<span class="variable">color</span>) {
+        <span class="keyword">if</span> (<span class="keyword">new</span>.<span class="variable">target</span> === <span class="function">Shape</span>) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="function">Error</span>(<span class="string">"Shape - абстрактный класс"</span>);
+        }
+        <span class="keyword">this</span>.<span class="variable">color</span> = <span class="variable">color</span>;
+    }
+    
+    <span class="comment">// Абстрактный метод (должен быть переопределен)</span>
+    <span class="function">area</span>() {
+        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="function">Error</span>(<span class="string">"Метод area() должен быть реализован"</span>);
+    }
+}
+
+<span class="keyword">class</span> <span class="class-name">Circle</span> <span class="keyword">extends</span> <span class="class-name">Shape</span> {
+    <span class="function">constructor</span>(<span class="variable">color</span>, <span class="variable">radius</span>) {
+        <span class="keyword">super</span>(<span class="variable">color</span>);
+        <span class="keyword">this</span>.<span class="variable">radius</span> = <span class="variable">radius</span>;
+    }
+    
+    <span class="function">area</span>() {
+        <span class="keyword">return</span> <span class="function">Math</span>.<span class="variable">PI</span> * <span class="keyword">this</span>.<span class="variable">radius</span> ** <span class="number">2</span>;
+    }
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Миксины</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 5: Миксины для композиции</span>
+            <pre><code><span class="comment">// Миксин для логирования</span>
+<span class="keyword">const</span> <span class="variable">Logger</span> = {
+    <span class="function">log</span>(<span class="variable">message</span>) {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">`[${this.constructor.name}] ${message}`</span>);
+    }
+};
+
+<span class="comment">// Миксин для валидации</span>
+<span class="keyword">const</span> <span class="variable">Validatable</span> = {
+    <span class="function">validate</span>() {
+        <span class="keyword">return</span> <span class="keyword">this</span>.<span class="function">rules</span>.<span class="function">every</span>(<span class="variable">rule</span> =&gt; <span class="variable">rule</span>(<span class="keyword">this</span>));
+    }
+};
+
+<span class="comment">// Класс с миксинами</span>
+<span class="function">Object</span>.<span class="function">assign</span>(<span class="function">User</span>.<span class="variable">prototype</span>, <span class="variable">Logger</span>, <span class="variable">Validatable</span>);
+
+<span class="keyword">class</span> <span class="class-name">User</span> {
+    <span class="function">constructor</span>(<span class="variable">name</span>, <span class="variable">email</span>) {
+        <span class="keyword">this</span>.<span class="variable">name</span> = <span class="variable">name</span>;
+        <span class="keyword">this</span>.<span class="variable">email</span> = <span class="variable">email</span>;
+        <span class="keyword">this</span>.<span class="variable">rules</span> = [
+            <span class="variable">u</span> =&gt; <span class="variable">u</span>.<span class="variable">name</span>.<span class="variable">length</span> &gt; <span class="number">0</span>,
+            <span class="variable">u</span> =&gt; <span class="variable">u</span>.<span class="variable">email</span>.<span class="function">includes</span>(<span class="string">"@"</span>)
+        ];
+    }
+}
+
+<span class="keyword">const</span> <span class="variable">user</span> = <span class="keyword">new</span> <span class="function">User</span>(<span class="string">"Иван"</span>, <span class="string">"ivan@example.com"</span>);
+<span class="variable">user</span>.<span class="function">log</span>(<span class="string">"Создан пользователь"</span>);
+<span class="variable">user</span>.<span class="function">validate</span>();</code></pre>
+        </div>
+    </div>
+</div>
+

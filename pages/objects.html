@@ -1,0 +1,364 @@
+<div class="container">
+    <a href="#" class="back-button">← Назад к списку тем</a>
+    
+    <div class="page-header">
+        <h1>🎁 Объекты и Прототипы</h1>
+        <p>Работа с объектами, прототипное наследование, классы ES6 - основа объектно-ориентированного программирования в JavaScript</p>
+    </div>
+
+    <div class="content-section">
+        <h2>Создание объектов</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 1: Способы создания объектов</span>
+            <pre><code><span class="comment">// Литерал объекта</span>
+<span class="keyword">const</span> <span class="variable">user</span> = {
+    <span class="variable">name</span>: <span class="string">"Иван"</span>,
+    <span class="variable">age</span>: <span class="number">30</span>,
+    <span class="function">greet</span>() {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">`Привет, я ${this.name}`</span>);
+    }
+};
+
+<span class="comment">// Конструктор Object</span>
+<span class="keyword">const</span> <span class="variable">obj</span> = <span class="keyword">new</span> <span class="function">Object</span>();
+<span class="variable">obj</span>.<span class="variable">name</span> = <span class="string">"Иван"</span>;
+
+<span class="comment">// Object.create() - создание с прототипом</span>
+<span class="keyword">const</span> <span class="variable">proto</span> = { <span class="variable">type</span>: <span class="string">"user"</span> };
+<span class="keyword">const</span> <span class="variable">newObj</span> = <span class="function">Object</span>.<span class="function">create</span>(<span class="variable">proto</span>);
+<span class="variable">newObj</span>.<span class="variable">name</span> = <span class="string">"Иван"</span>;
+
+<span class="comment">// Фабричная функция</span>
+<span class="function">function</span> <span class="function">createUser</span>(<span class="variable">name</span>, <span class="variable">age</span>) {
+    <span class="keyword">return</span> {
+        <span class="variable">name</span>,
+        <span class="variable">age</span>,
+        <span class="function">greet</span>() {
+            <span class="function">console</span>.<span class="function">log</span>(<span class="string">`Привет, я ${this.name}`</span>);
+        }
+    };
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Доступ к свойствам</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 2: Работа со свойствами</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">user</span> = {
+    <span class="variable">name</span>: <span class="string">"Иван"</span>,
+    <span class="variable">age</span>: <span class="number">30</span>
+};
+
+<span class="comment">// Точечная нотация</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">user</span>.<span class="variable">name</span>);  <span class="comment">// "Иван"</span>
+
+<span class="comment">// Квадратные скобки</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">user</span>[<span class="string">"name"</span>]);  <span class="comment">// "Иван"</span>
+<span class="keyword">const</span> <span class="variable">prop</span> = <span class="string">"age"</span>;
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">user</span>[<span class="variable">prop</span>]);  <span class="comment">// 30</span>
+
+<span class="comment">// Добавление свойств</span>
+<span class="variable">user</span>.<span class="variable">city</span> = <span class="string">"Москва"</span>;
+<span class="variable">user</span>[<span class="string">"email"</span>] = <span class="string">"ivan@example.com"</span>;
+
+<span class="comment">// Удаление свойств</span>
+<span class="keyword">delete</span> <span class="variable">user</span>.<span class="variable">city</span>;
+
+<span class="comment">// Проверка наличия свойства</span>
+<span class="string">"name"</span> <span class="keyword">in</span> <span class="variable">user</span>;  <span class="comment">// true</span>
+<span class="variable">user</span>.<span class="function">hasOwnProperty</span>(<span class="string">"name"</span>);  <span class="comment">// true</span>
+<span class="function">Object</span>.<span class="function">hasOwn</span>(<span class="variable">user</span>, <span class="string">"name"</span>);  <span class="comment">// true (ES2022)</span></code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Перечисление свойств</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 3: Методы для работы со свойствами</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">user</span> = {
+    <span class="variable">name</span>: <span class="string">"Иван"</span>,
+    <span class="variable">age</span>: <span class="number">30</span>,
+    <span class="variable">city</span>: <span class="string">"Москва"</span>
+};
+
+<span class="comment">// Object.keys() - массив ключей</span>
+<span class="function">Object</span>.<span class="function">keys</span>(<span class="variable">user</span>);  <span class="comment">// ["name", "age", "city"]</span>
+
+<span class="comment">// Object.values() - массив значений</span>
+<span class="function">Object</span>.<span class="function">values</span>(<span class="variable">user</span>);  <span class="comment">// ["Иван", 30, "Москва"]</span>
+
+<span class="comment">// Object.entries() - массив пар [ключ, значение]</span>
+<span class="function">Object</span>.<span class="function">entries</span>(<span class="variable">user</span>);  <span class="comment">// [["name", "Иван"], ["age", 30], ["city", "Москва"]]</span>
+
+<span class="comment">// Перебор свойств</span>
+<span class="keyword">for</span> (<span class="keyword">const</span> <span class="variable">key</span> <span class="keyword">in</span> <span class="variable">user</span>) {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="variable">key</span>, <span class="variable">user</span>[<span class="variable">key</span>]);
+}
+
+<span class="comment">// Object.keys() + forEach</span>
+<span class="function">Object</span>.<span class="function">keys</span>(<span class="variable">user</span>).<span class="function">forEach</span>(<span class="variable">key</span> =&gt; {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="variable">key</span>, <span class="variable">user</span>[<span class="variable">key</span>]);
+});</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Копирование объектов</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 4: Поверхностное и глубокое копирование</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">original</span> = {
+    <span class="variable">name</span>: <span class="string">"Иван"</span>,
+    <span class="variable">address</span>: {
+        <span class="variable">city</span>: <span class="string">"Москва"</span>
+    }
+};
+
+<span class="comment">// Поверхностное копирование (shallow copy)</span>
+<span class="comment">// Spread оператор</span>
+<span class="keyword">const</span> <span class="variable">copy1</span> = { ...<span class="variable">original</span> };
+<span class="variable">copy1</span>.<span class="variable">name</span> = <span class="string">"Петр"</span>;  <span class="comment">// OK</span>
+<span class="variable">copy1</span>.<span class="variable">address</span>.<span class="variable">city</span> = <span class="string">"СПб"</span>;  <span class="comment">// Изменит original тоже!</span>
+
+<span class="comment">// Object.assign()</span>
+<span class="keyword">const</span> <span class="variable">copy2</span> = <span class="function">Object</span>.<span class="function">assign</span>({}, <span class="variable">original</span>);
+
+<span class="comment">// Глубокое копирование (deep copy)</span>
+<span class="comment">// JSON (только для простых объектов)</span>
+<span class="keyword">const</span> <span class="variable">deepCopy1</span> = <span class="function">JSON</span>.<span class="function">parse</span>(<span class="function">JSON</span>.<span class="function">stringify</span>(<span class="variable">original</span>));
+
+<span class="comment">// Structured Clone (ES2022) - лучше!</span>
+<span class="keyword">const</span> <span class="variable">deepCopy2</span> = <span class="function">structuredClone</span>(<span class="variable">original</span>);
+
+<span class="comment">// Рекурсивная функция для глубокого копирования</span>
+<span class="function">function</span> <span class="function">deepCopy</span>(<span class="variable">obj</span>) {
+    <span class="keyword">if</span> (<span class="variable">obj</span> === <span class="keyword">null</span> || <span class="keyword">typeof</span> <span class="variable">obj</span> !== <span class="string">"object"</span>) {
+        <span class="keyword">return</span> <span class="variable">obj</span>;
+    }
+    
+    <span class="keyword">if</span> (<span class="variable">obj</span> <span class="keyword">instanceof</span> <span class="function">Date</span>) {
+        <span class="keyword">return</span> <span class="keyword">new</span> <span class="function">Date</span>(<span class="variable">obj</span>.<span class="function">getTime</span>());
+    }
+    
+    <span class="keyword">if</span> (<span class="function">Array</span>.<span class="function">isArray</span>(<span class="variable">obj</span>)) {
+        <span class="keyword">return</span> <span class="variable">obj</span>.<span class="function">map</span>(<span class="variable">item</span> =&gt; <span class="function">deepCopy</span>(<span class="variable">item</span>));
+    }
+    
+    <span class="keyword">const</span> <span class="variable">copy</span> = {};
+    <span class="keyword">for</span> (<span class="keyword">const</span> <span class="variable">key</span> <span class="keyword">in</span> <span class="variable">obj</span>) {
+        <span class="keyword">if</span> (<span class="variable">obj</span>.<span class="function">hasOwnProperty</span>(<span class="variable">key</span>)) {
+            <span class="variable">copy</span>[<span class="variable">key</span>] = <span class="function">deepCopy</span>(<span class="variable">obj</span>[<span class="variable">key</span>]);
+        }
+    }
+    <span class="keyword">return</span> <span class="variable">copy</span>;
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Прототипы (Prototypes)</h2>
+        <p>JavaScript использует прототипное наследование. Каждый объект имеет скрытое свойство <code>[[Prototype]]</code>, которое ссылается на другой объект.</p>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 5: Прототипы</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">animal</span> = {
+    <span class="variable">type</span>: <span class="string">"животное"</span>,
+    <span class="function">speak</span>() {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Звук животного"</span>);
+    }
+};
+
+<span class="keyword">const</span> <span class="variable">dog</span> = <span class="function">Object</span>.<span class="function">create</span>(<span class="variable">animal</span>);
+<span class="variable">dog</span>.<span class="variable">breed</span> = <span class="string">"лабрадор"</span>;
+<span class="variable">dog</span>.<span class="function">speak</span> = <span class="function">function</span>() {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Гав!"</span>);
+};
+
+<span class="variable">dog</span>.<span class="function">speak</span>();      <span class="comment">// "Гав!" (свое)</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">dog</span>.<span class="variable">type</span>);  <span class="comment">// "животное" (из прототипа)</span>
+
+<span class="comment">// Проверка прототипа</span>
+<span class="function">Object</span>.<span class="function">getPrototypeOf</span>(<span class="variable">dog</span>) === <span class="variable">animal</span>;  <span class="comment">// true</span>
+<span class="variable">dog</span>.<span class="variable">__proto__</span> === <span class="variable">animal</span>;  <span class="comment">// true (устаревший способ)</span>
+
+<span class="comment">// Установка прототипа</span>
+<span class="function">Object</span>.<span class="function">setPrototypeOf</span>(<span class="variable">dog</span>, <span class="variable">animal</span>);</code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 6: Прототипная цепочка</span>
+            <pre><code><span class="function">function</span> <span class="function">Animal</span>(<span class="variable">name</span>) {
+    <span class="keyword">this</span>.<span class="variable">name</span> = <span class="variable">name</span>;
+}
+
+<span class="function">Animal</span>.<span class="variable">prototype</span>.<span class="function">speak</span> = <span class="function">function</span>() {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">`${this.name} издает звук`</span>);
+};
+
+<span class="function">function</span> <span class="function">Dog</span>(<span class="variable">name</span>, <span class="variable">breed</span>) {
+    <span class="function">Animal</span>.<span class="function">call</span>(<span class="keyword">this</span>, <span class="variable">name</span>);  <span class="comment">// Вызов родительского конструктора</span>
+    <span class="keyword">this</span>.<span class="variable">breed</span> = <span class="variable">breed</span>;
+}
+
+<span class="comment">// Наследование прототипа</span>
+<span class="function">Dog</span>.<span class="variable">prototype</span> = <span class="function">Object</span>.<span class="function">create</span>(<span class="function">Animal</span>.<span class="variable">prototype</span>);
+<span class="function">Dog</span>.<span class="variable">prototype</span>.<span class="function">constructor</span> = <span class="function">Dog</span>;
+
+<span class="function">Dog</span>.<span class="variable">prototype</span>.<span class="function">bark</span> = <span class="function">function</span>() {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Гав!"</span>);
+};
+
+<span class="keyword">const</span> <span class="variable">myDog</span> = <span class="keyword">new</span> <span class="function">Dog</span>(<span class="string">"Барсик"</span>, <span class="string">"лабрадор"</span>);
+<span class="variable">myDog</span>.<span class="function">speak</span>();  <span class="comment">// "Барсик издает звук"</span>
+<span class="variable">myDog</span>.<span class="function">bark</span>();   <span class="comment">// "Гав!"</span>
+
+<span class="comment">// Проверка принадлежности</span>
+<span class="variable">myDog</span> <span class="keyword">instanceof</span> <span class="function">Dog</span>;     <span class="comment">// true</span>
+<span class="variable">myDog</span> <span class="keyword">instanceof</span> <span class="function">Animal</span>;  <span class="comment">// true</span></code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Классы ES6</h2>
+        <p>Синтаксический сахар над прототипами. Более понятный и удобный способ создания объектов с наследованием.</p>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 7: Базовый класс</span>
+            <pre><code><span class="keyword">class</span> <span class="class-name">Animal</span> {
+    <span class="comment">// Поля класса (ES2022)</span>
+    <span class="variable">name</span>;
+    <span class="variable">age</span> = <span class="number">0</span>;
+    
+    <span class="comment">// Конструктор</span>
+    <span class="function">constructor</span>(<span class="variable">name</span>) {
+        <span class="keyword">this</span>.<span class="variable">name</span> = <span class="variable">name</span>;
+    }
+    
+    <span class="comment">// Методы</span>
+    <span class="function">speak</span>() {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">`${this.name} издает звук`</span>);
+    }
+    
+    <span class="comment">// Геттеры и сеттеры</span>
+    <span class="keyword">get</span> <span class="function">info</span>() {
+        <span class="keyword">return</span> <span class="string">`${this.name}, возраст: ${this.age}`</span>;
+    }
+    
+    <span class="keyword">set</span> <span class="function">age</span>(<span class="variable">value</span>) {
+        <span class="keyword">if</span> (<span class="variable">value</span> &lt; <span class="number">0</span>) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="function">Error</span>(<span class="string">"Возраст не может быть отрицательным"</span>);
+        }
+        <span class="keyword">this</span>.<span class="variable">_age</span> = <span class="variable">value</span>;
+    }
+    
+    <span class="keyword">get</span> <span class="function">age</span>() {
+        <span class="keyword">return</span> <span class="keyword">this</span>.<span class="variable">_age</span> || <span class="number">0</span>;
+    }
+    
+    <span class="comment">// Статические методы</span>
+    <span class="keyword">static</span> <span class="function">create</span>(<span class="variable">name</span>) {
+        <span class="keyword">return</span> <span class="keyword">new</span> <span class="function">Animal</span>(<span class="variable">name</span>);
+    }
+}
+
+<span class="keyword">const</span> <span class="variable">animal</span> = <span class="keyword">new</span> <span class="function">Animal</span>(<span class="string">"Зверь"</span>);
+<span class="variable">animal</span>.<span class="function">speak</span>();  <span class="comment">// "Зверь издает звук"</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">animal</span>.<span class="variable">info</span>);  <span class="comment">// "Зверь, возраст: 0"</span>
+
+<span class="keyword">const</span> <span class="variable">animal2</span> = <span class="function">Animal</span>.<span class="function">create</span>(<span class="string">"Зверь2"</span>);  <span class="comment">// Статический метод</span></code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 8: Наследование классов</span>
+            <pre><code><span class="keyword">class</span> <span class="class-name">Dog</span> <span class="keyword">extends</span> <span class="class-name">Animal</span> {
+    <span class="function">constructor</span>(<span class="variable">name</span>, <span class="variable">breed</span>) {
+        <span class="keyword">super</span>(<span class="variable">name</span>);  <span class="comment">// Вызов конструктора родителя</span>
+        <span class="keyword">this</span>.<span class="variable">breed</span> = <span class="variable">breed</span>;
+    }
+    
+    <span class="comment">// Переопределение метода</span>
+    <span class="function">speak</span>() {
+        <span class="function">super</span>.<span class="function">speak</span>();  <span class="comment">// Вызов метода родителя</span>
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Гав!"</span>);
+    }
+    
+    <span class="function">bark</span>() {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">`${this.name} лает: Гав-гав!`</span>);
+    }
+}
+
+<span class="keyword">const</span> <span class="variable">dog</span> = <span class="keyword">new</span> <span class="function">Dog</span>(<span class="string">"Барсик"</span>, <span class="string">"лабрадор"</span>);
+<span class="variable">dog</span>.<span class="function">speak</span>();  <span class="comment">// "Барсик издает звук" + "Гав!"</span>
+<span class="variable">dog</span>.<span class="function">bark</span>();   <span class="comment">// "Барсик лает: Гав-гав!"</span>
+
+<span class="comment">// Приватные поля (ES2022)</span>
+<span class="keyword">class</span> <span class="class-name">BankAccount</span> {
+    #<span class="variable">balance</span> = <span class="number">0</span>;  <span class="comment">// Приватное поле</span>
+    
+    <span class="function">deposit</span>(<span class="variable">amount</span>) {
+        <span class="keyword">this</span>.#<span class="variable">balance</span> += <span class="variable">amount</span>;
+    }
+    
+    <span class="function">getBalance</span>() {
+        <span class="keyword">return</span> <span class="keyword">this</span>.#<span class="variable">balance</span>;
+    }
+}
+
+<span class="keyword">const</span> <span class="variable">account</span> = <span class="keyword">new</span> <span class="function">BankAccount</span>();
+<span class="variable">account</span>.<span class="function">deposit</span>(<span class="number">100</span>);
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">account</span>.<span class="function">getBalance</span>());  <span class="comment">// 100</span>
+<span class="comment">// account.#balance;  // Ошибка! Приватное поле недоступно</span></code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Object методы</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 9: Полезные методы Object</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">user</span> = {
+    <span class="variable">name</span>: <span class="string">"Иван"</span>,
+    <span class="variable">age</span>: <span class="number">30</span>
+};
+
+<span class="comment">// Object.freeze() - замораживает объект</span>
+<span class="function">Object</span>.<span class="function">freeze</span>(<span class="variable">user</span>);
+<span class="variable">user</span>.<span class="variable">age</span> = <span class="number">31</span>;  <span class="comment">// Игнорируется (в strict mode - ошибка)</span>
+<span class="function">Object</span>.<span class="function">isFrozen</span>(<span class="variable">user</span>);  <span class="comment">// true</span>
+
+<span class="comment">// Object.seal() - запрещает добавлять/удалять свойства</span>
+<span class="keyword">const</span> <span class="variable">sealed</span> = <span class="function">Object</span>.<span class="function">seal</span>({ <span class="variable">a</span>: <span class="number">1</span> });
+<span class="variable">sealed</span>.<span class="variable">b</span> = <span class="number">2</span>;  <span class="comment">// Игнорируется</span>
+<span class="variable">sealed</span>.<span class="variable">a</span> = <span class="number">10</span>;  <span class="comment">// OK</span>
+
+<span class="comment">// Object.preventExtensions() - запрещает добавлять свойства</span>
+<span class="function">Object</span>.<span class="function">preventExtensions</span>(<span class="variable">user</span>);
+
+<span class="comment">// Object.defineProperty() - определение свойства с дескрипторами</span>
+<span class="function">Object</span>.<span class="function">defineProperty</span>(<span class="variable">user</span>, <span class="string">"email"</span>, {
+    <span class="variable">value</span>: <span class="string">"ivan@example.com"</span>,
+    <span class="variable">writable</span>: <span class="keyword">false</span>,      <span class="comment">// Нельзя изменять</span>
+    <span class="variable">enumerable</span>: <span class="keyword">true</span>,     <span class="comment">// Видно в переборах</span>
+    <span class="variable">configurable</span>: <span class="keyword">false</span>  <span class="comment">// Нельзя удалять</span>
+});
+
+<span class="comment">// Геттер/сеттер через defineProperty</span>
+<span class="keyword">let</span> <span class="variable">_age</span> = <span class="number">0</span>;
+<span class="function">Object</span>.<span class="function">defineProperty</span>(<span class="variable">user</span>, <span class="string">"age"</span>, {
+    <span class="keyword">get</span>: () =&gt; <span class="variable">_age</span>,
+    <span class="keyword">set</span>: (<span class="variable">value</span>) =&gt; {
+        <span class="keyword">if</span> (<span class="variable">value</span> &gt; <span class="number">0</span>) <span class="variable">_age</span> = <span class="variable">value</span>;
+    }
+});</code></pre>
+        </div>
+    </div>
+
+    <div class="tip">
+        <strong>Совет:</strong> Используйте классы ES6 для более понятного кода, но помните, что это синтаксический сахар над прототипами. Для поверхностного копирования используйте spread, для глубокого - structuredClone или рекурсивную функцию.
+    </div>
+</div>
+

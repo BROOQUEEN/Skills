@@ -1,0 +1,154 @@
+<div class="container">
+    <a href="#" class="back-button">← Назад к списку тем</a>
+    
+    <div class="page-header">
+        <h1>🔤 Регулярные выражения</h1>
+        <p>Синтаксис регулярных выражений, методы работы, флаги и практические примеры</p>
+    </div>
+
+    <div class="content-section">
+        <h2>Создание регулярных выражений</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 1: Способы создания</span>
+            <pre><code><span class="comment">// Литерал (рекомендуется)</span>
+<span class="keyword">const</span> <span class="variable">pattern1</span> = <span class="regex">/abc/</span>;
+
+<span class="comment">// Конструктор (когда паттерн динамический)</span>
+<span class="keyword">const</span> <span class="variable">pattern2</span> = <span class="keyword">new</span> <span class="function">RegExp</span>(<span class="string">"abc"</span>);
+<span class="keyword">const</span> <span class="variable">pattern3</span> = <span class="keyword">new</span> <span class="function">RegExp</span>(<span class="string">`^${variable}`</span>);  <span class="comment">// С переменными</span>
+
+<span class="comment">// С флагами</span>
+<span class="keyword">const</span> <span class="variable">pattern4</span> = <span class="regex">/abc/gi</span>;  <span class="comment">// g - глобальный, i - игнорировать регистр</span>
+<span class="keyword">const</span> <span class="variable">pattern5</span> = <span class="keyword">new</span> <span class="function">RegExp</span>(<span class="string">"abc"</span>, <span class="string">"gi"</span>);</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Методы работы с регулярными выражениями</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 2: Методы String</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">text</span> = <span class="string">"Hello world, hello JavaScript"</span>;
+<span class="keyword">const</span> <span class="variable">pattern</span> = <span class="regex">/hello/gi</span>;
+
+<span class="comment">// test - проверка наличия</span>
+<span class="variable">pattern</span>.<span class="function">test</span>(<span class="variable">text</span>);  <span class="comment">// true</span>
+
+<span class="comment">// match - поиск совпадений</span>
+<span class="variable">text</span>.<span class="function">match</span>(<span class="variable">pattern</span>);  <span class="comment">// ["Hello", "hello"]</span>
+
+<span class="comment">// search - индекс первого совпадения</span>
+<span class="variable">text</span>.<span class="function">search</span>(<span class="variable">pattern</span>);  <span class="comment">// 0</span>
+
+<span class="comment">// replace - замена</span>
+<span class="variable">text</span>.<span class="function">replace</span>(<span class="variable">pattern</span>, <span class="string">"Hi"</span>);  <span class="comment">// "Hi world, Hi JavaScript"</span>
+<span class="variable">text</span>.<span class="function">replaceAll</span>(<span class="variable">pattern</span>, <span class="string">"Hi"</span>);  <span class="comment">// То же самое</span>
+
+<span class="comment">// split - разделение</span>
+<span class="variable">text</span>.<span class="function">split</span>(<span class="regex">/\s+/</span>);  <span class="comment">// ["Hello", "world,", "hello", "JavaScript"]</span></code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 3: Методы RegExp</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">pattern</span> = <span class="regex">/hello/gi</span>;
+<span class="keyword">const</span> <span class="variable">text</span> = <span class="string">"Hello world, hello JavaScript"</span>;
+
+<span class="comment">// exec - поиск с деталями</span>
+<span class="keyword">let</span> <span class="variable">result</span>;
+<span class="keyword">while</span> ((<span class="variable">result</span> = <span class="variable">pattern</span>.<span class="function">exec</span>(<span class="variable">text</span>)) !== <span class="keyword">null</span>) {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="variable">result</span>[<span class="number">0</span>]);  <span class="comment">// Совпадение</span>
+    <span class="function">console</span>.<span class="function">log</span>(<span class="variable">result</span>.<span class="variable">index</span>);  <span class="comment">// Позиция</span>
+}
+</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Символы и классы</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 4: Основные символы</span>
+            <pre><code><span class="comment">// Специальные символы</span>
+<span class="regex">/./</span>          <span class="comment">// Любой символ</span>
+<span class="regex">/\d/</span>         <span class="comment">// Цифра [0-9]</span>
+<span class="regex">/\w/</span>         <span class="comment">// Буква, цифра, _ [a-zA-Z0-9_]</span>
+<span class="regex">/\s/</span>         <span class="comment">// Пробельный символ</span>
+<span class="regex">/\D/</span>         <span class="comment">// Не цифра</span>
+<span class="regex">/\W/</span>         <span class="comment">// Не буква/цифра/_</span>
+<span class="regex">/\S/</span>         <span class="comment">// Не пробел</span>
+
+<span class="comment">// Квантификаторы</span>
+<span class="regex">/a+/</span>         <span class="comment">// Один или более</span>
+<span class="regex">/a*/</span>         <span class="comment">// Ноль или более</span>
+<span class="regex">/a?/</span>         <span class="comment">// Ноль или один</span>
+<span class="regex">/a{3}/</span>       <span class="comment">// Ровно 3</span>
+<span class="regex">/a{2,4}/</span>     <span class="comment">// От 2 до 4</span>
+<span class="regex">/a{2,}/</span>      <span class="comment">// 2 или более</span>
+
+<span class="comment">// Позиции</span>
+<span class="regex">/^abc/</span>       <span class="comment">// Начало строки</span>
+<span class="regex">/abc$/</span>       <span class="comment">// Конец строки</span>
+<span class="regex">/\bword\b/</span>   <span class="comment">// Граница слова</span>
+
+<span class="comment">// Классы символов</span>
+<span class="regex">/[abc]/</span>      <span class="comment">// Любой из: a, b, c</span>
+<span class="regex">/[a-z]/</span>      <span class="comment">// От a до z</span>
+<span class="regex">/[^abc]/</span>     <span class="comment">// Любой кроме a, b, c</span>
+<span class="regex">/[0-9]/</span>      <span class="comment">// Цифры</span>
+
+<span class="comment">// Группы</span>
+<span class="regex">/(abc)/</span>      <span class="comment">// Захватывающая группа</span>
+<span class="regex">/(?:abc)/</span>    <span class="comment">// Незахватывающая группа</span>
+<span class="regex">/(?&lt;name&gt;abc)/</span> <span class="comment">// Именованная группа (ES2018)</span>
+
+<span class="comment">// Альтернатива</span>
+<span class="regex">/cat|dog/</span>    <span class="comment">// cat или dog</span>
+</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Практические примеры</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 5: Валидация</span>
+            <pre><code><span class="comment">// Email</span>
+<span class="keyword">const</span> <span class="variable">emailPattern</span> = <span class="regex">/^[^\s@]+@[^\s@]+\.[^\s@]+$/</span>;
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">emailPattern</span>.<span class="function">test</span>(<span class="string">"user@example.com"</span>));  <span class="comment">// true</span>
+
+<span class="comment">// Телефон</span>
+<span class="keyword">const</span> <span class="variable">phonePattern</span> = <span class="regex">/^\+?[1-9]\d{1,14}$/</span>;
+
+<span class="comment">// URL</span>
+<span class="keyword">const</span> <span class="variable">urlPattern</span> = <span class="regex">/^https?:\/\/.+/</span>;
+
+<span class="comment">// Пароль (минимум 8 символов, буква и цифра)</span>
+<span class="keyword">const</span> <span class="variable">passwordPattern</span> = <span class="regex">/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/</span>;
+
+<span class="function">function</span> <span class="function">validateEmail</span>(<span class="variable">email</span>) {
+    <span class="keyword">return</span> <span class="regex">/^[^\s@]+@[^\s@]+\.[^\s@]+$/</span>.<span class="function">test</span>(<span class="variable">email</span>);
+}</code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 6: Извлечение данных</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">text</span> = <span class="string">"Дата: 2024-12-15, Время: 14:30"</span>;
+
+<span class="comment">// Извлечение даты</span>
+<span class="keyword">const</span> <span class="variable">dateMatch</span> = <span class="variable">text</span>.<span class="function">match</span>(<span class="regex">/(\d{4})-(\d{2})-(\d{2})/</span>);
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">dateMatch</span>);  <span class="comment">// ["2024-12-15", "2024", "12", "15"]</span>
+
+<span class="comment">// Именованные группы</span>
+<span class="keyword">const</span> <span class="variable">pattern</span> = <span class="regex">/(?&lt;year&gt;\d{4})-(?&lt;month&gt;\d{2})-(?&lt;day&gt;\d{2})/</span>;
+<span class="keyword">const</span> <span class="variable">match</span> = <span class="variable">text</span>.<span class="function">match</span>(<span class="variable">pattern</span>);
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">match</span>.<span class="variable">groups</span>);  <span class="comment">// { year: "2024", month: "12", day: "15" }</span>
+
+<span class="comment">// Замена с использованием групп</span>
+<span class="keyword">const</span> <span class="variable">result</span> = <span class="string">"Иван Петров"</span>.<span class="function">replace</span>(<span class="regex">/(\w+) (\w+)/</span>, <span class="string">"$2, $1"</span>);
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">result</span>);  <span class="comment">// "Петров, Иван"</span>
+</code></pre>
+        </div>
+    </div>
+</div>
+

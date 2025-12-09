@@ -1,0 +1,263 @@
+<div class="container">
+    <a href="#" class="back-button">← Назад к списку тем</a>
+    
+    <div class="page-header">
+        <h1>🎪 События</h1>
+        <p>Обработчики событий, делегирование событий, кастомные события и работа с событиями DOM</p>
+    </div>
+
+    <div class="content-section">
+        <h2>Базовые обработчики событий</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 1: Способы добавления обработчиков</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">button</span> = <span class="function">document</span>.<span class="function">querySelector</span>(<span class="string">"button"</span>);
+
+<span class="comment">// Способ 1: inline в HTML (не рекомендуется)</span>
+<span class="comment">// &lt;button onclick="handleClick()"&gt;Кнопка&lt;/button&gt;</span>
+
+<span class="comment">// Способ 2: свойство элемента</span>
+<span class="variable">button</span>.<span class="variable">onclick</span> = <span class="function">function</span>() {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Кнопка нажата"</span>);
+};
+
+<span class="comment">// Способ 3: addEventListener (рекомендуемый)</span>
+<span class="variable">button</span>.<span class="function">addEventListener</span>(<span class="string">"click"</span>, <span class="function">function</span>() {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Клик 1"</span>);
+});
+
+<span class="comment">// Можно добавить несколько обработчиков</span>
+<span class="variable">button</span>.<span class="function">addEventListener</span>(<span class="string">"click"</span>, <span class="function">function</span>() {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Клик 2"</span>);
+});
+
+<span class="comment">// Стрелочная функция</span>
+<span class="variable">button</span>.<span class="function">addEventListener</span>(<span class="string">"click"</span>, () =&gt; {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Клик 3"</span>);
+});</code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 2: Объект события</span>
+            <pre><code><span class="variable">button</span>.<span class="function">addEventListener</span>(<span class="string">"click"</span>, <span class="function">function</span>(<span class="variable">event</span>) {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="variable">event</span>.<span class="variable">type</span>);        <span class="comment">// "click"</span>
+    <span class="function">console</span>.<span class="function">log</span>(<span class="variable">event</span>.<span class="variable">target</span>);      <span class="comment">// Элемент, на котором произошло событие</span>
+    <span class="function">console</span>.<span class="function">log</span>(<span class="variable">event</span>.<span class="variable">currentTarget</span>); <span class="comment">// Элемент с обработчиком</span>
+    <span class="function">console</span>.<span class="function">log</span>(<span class="variable">event</span>.<span class="variable">clientX</span>, <span class="variable">event</span>.<span class="variable">clientY</span>); <span class="comment">// Координаты мыши</span>
+    <span class="function">console</span>.<span class="function">log</span>(<span class="variable">event</span>.<span class="variable">button</span>);      <span class="comment">// Кнопка мыши (0 - левая, 1 - средняя, 2 - правая)</span>
+    <span class="function">console</span>.<span class="function">log</span>(<span class="variable">event</span>.<span class="variable">shiftKey</span>);    <span class="comment">// Зажат ли Shift</span>
+    <span class="function">console</span>.<span class="function">log</span>(<span class="variable">event</span>.<span class="variable">ctrlKey</span>);     <span class="comment">// Зажат ли Ctrl</span>
+    <span class="function">console</span>.<span class="function">log</span>(<span class="variable">event</span>.<span class="variable">altKey</span>);      <span class="comment">// Зажат ли Alt</span>
+    
+    <span class="comment">// Предотвращение стандартного поведения</span>
+    <span class="variable">event</span>.<span class="function">preventDefault</span>();
+    
+    <span class="comment">// Остановка всплытия (propagation)</span>
+    <span class="variable">event</span>.<span class="function">stopPropagation</span>();
+    
+    <span class="comment">// Остановка немедленного распространения</span>
+    <span class="variable">event</span>.<span class="function">stopImmediatePropagation</span>();
+});</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Удаление обработчиков</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 3: removeEventListener</span>
+            <pre><code><span class="comment">// Для удаления нужна ссылка на ту же функцию</span>
+<span class="function">function</span> <span class="function">handleClick</span>(<span class="variable">event</span>) {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Клик"</span>);
+}
+
+<span class="variable">button</span>.<span class="function">addEventListener</span>(<span class="string">"click"</span>, <span class="variable">handleClick</span>);
+
+<span class="comment">// Удаление</span>
+<span class="variable">button</span>.<span class="function">removeEventListener</span>(<span class="string">"click"</span>, <span class="variable">handleClick</span>);
+
+<span class="comment">// С опциями (нужно указать те же опции)</span>
+<span class="variable">button</span>.<span class="function">addEventListener</span>(<span class="string">"click"</span>, <span class="variable">handleClick</span>, { <span class="variable">once</span>: <span class="keyword">true</span> });
+<span class="variable">button</span>.<span class="function">removeEventListener</span>(<span class="string">"click"</span>, <span class="variable">handleClick</span>, { <span class="variable">once</span>: <span class="keyword">true</span> });
+
+<span class="comment">// AbortController для группового удаления</span>
+<span class="keyword">const</span> <span class="variable">controller</span> = <span class="keyword">new</span> <span class="function">AbortController</span>();
+<span class="variable">button</span>.<span class="function">addEventListener</span>(<span class="string">"click"</span>, <span class="variable">handleClick</span>, { <span class="variable">signal</span>: <span class="variable">controller</span>.<span class="variable">signal</span> });
+<span class="variable">controller</span>.<span class="function">abort</span>();  <span class="comment">// Удаляет все обработчики с этим сигналом</span></code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Опции addEventListener</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 4: Опции обработчика</span>
+            <pre><code><span class="variable">button</span>.<span class="function">addEventListener</span>(<span class="string">"click"</span>, <span class="variable">handleClick</span>, {
+    <span class="variable">capture</span>: <span class="keyword">true</span>,      <span class="comment">// Фаза захвата вместо всплытия</span>
+    <span class="variable">once</span>: <span class="keyword">true</span>,        <span class="comment">// Удалить после первого вызова</span>
+    <span class="variable">passive</span>: <span class="keyword">true</span>,      <span class="comment">// Обработчик не вызывает preventDefault()</span>
+    <span class="variable">signal</span>: <span class="variable">abortSignal</span> <span class="comment">// Сигнал для отмены</span>
+});
+
+<span class="comment">// once - автоматическое удаление</span>
+<span class="variable">button</span>.<span class="function">addEventListener</span>(<span class="string">"click"</span>, <span class="function">function</span>() {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Сработает только один раз"</span>);
+}, { <span class="variable">once</span>: <span class="keyword">true</span> });
+
+<span class="comment">// passive - для событий scroll/touch (улучшает производительность)</span>
+<span class="function">window</span>.<span class="function">addEventListener</span>(<span class="string">"scroll"</span>, <span class="function">function</span>() {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Скролл"</span>);
+}, { <span class="variable">passive</span>: <span class="keyword">true</span> });</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Всплытие и захват (Bubbling и Capturing)</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 5: Фазы события</span>
+            <pre><code><span class="comment">// Структура: div.container > button</span>
+
+<span class="comment">// Фаза захвата (capturing) - сверху вниз</span>
+<span class="function">document</span>.<span class="function">querySelector</span>(<span class="string">".container"</span>).<span class="function">addEventListener</span>(<span class="string">"click"</span>, <span class="function">function</span>() {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Container (capturing)"</span>);
+}, <span class="keyword">true</span>);  <span class="comment">// true = фаза захвата</span>
+
+<span class="comment">// Фаза всплытия (bubbling) - снизу вверх (по умолчанию)</span>
+<span class="function">document</span>.<span class="function">querySelector</span>(<span class="string">"button"</span>).<span class="function">addEventListener</span>(<span class="string">"click"</span>, <span class="function">function</span>(<span class="variable">e</span>) {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Button (bubbling)"</span>);
+    <span class="variable">e</span>.<span class="function">stopPropagation</span>();  <span class="comment">// Остановить всплытие</span>
+});
+
+<span class="function">document</span>.<span class="function">querySelector</span>(<span class="string">".container"</span>).<span class="function">addEventListener</span>(<span class="string">"click"</span>, <span class="function">function</span>() {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Container (bubbling)"</span>);  <span class="comment">// Не выполнится, если остановлено всплытие</span>
+});
+
+<span class="comment">// Порядок выполнения при клике на button:</span>
+<span class="comment">// 1. Container (capturing)</span>
+<span class="comment">// 2. Button (bubbling)</span>
+<span class="comment">// 3. Container (bubbling) - если не остановлено</span></code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Делегирование событий</h2>
+        <p>Эффективный способ обработки событий для множества элементов через одного общего родителя.</p>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 6: Делегирование</span>
+            <pre><code><span class="comment">// Плохо: обработчик на каждом элементе</span>
+<span class="function">document</span>.<span class="function">querySelectorAll</span>(<span class="string">".item"</span>).<span class="function">forEach</span>(<span class="variable">item</span> =&gt; {
+    <span class="variable">item</span>.<span class="function">addEventListener</span>(<span class="string">"click"</span>, <span class="function">handleClick</span>);
+});
+
+<span class="comment">// Хорошо: один обработчик на родителе</span>
+<span class="function">document</span>.<span class="function">querySelector</span>(<span class="string">".container"</span>).<span class="function">addEventListener</span>(<span class="string">"click"</span>, <span class="function">function</span>(<span class="variable">event</span>) {
+    <span class="comment">// Проверяем, что клик был по нужному элементу</span>
+    <span class="keyword">if</span> (<span class="variable">event</span>.<span class="variable">target</span>.<span class="variable">classList</span>.<span class="function">contains</span>(<span class="string">"item"</span>)) {
+        <span class="function">handleClick</span>(<span class="variable">event</span>);
+    }
+    
+    <span class="comment">// Или через closest</span>
+    <span class="keyword">const</span> <span class="variable">item</span> = <span class="variable">event</span>.<span class="variable">target</span>.<span class="function">closest</span>(<span class="string">".item"</span>);
+    <span class="keyword">if</span> (<span class="variable">item</span>) {
+        <span class="function">handleClick</span>(<span class="variable">event</span>);
+    }
+});
+
+<span class="comment">// Работает даже для динамически добавленных элементов!</span>
+<span class="function">function</span> <span class="function">addNewItem</span>() {
+    <span class="keyword">const</span> <span class="variable">newItem</span> = <span class="function">document</span>.<span class="function">createElement</span>(<span class="string">"div"</span>);
+    <span class="variable">newItem</span>.<span class="variable">className</span> = <span class="string">"item"</span>;
+    <span class="variable">container</span>.<span class="function">appendChild</span>(<span class="variable">newItem</span>);
+    <span class="comment">// Обработчик уже работает для новых элементов!</span>
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Типы событий</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 7: Основные типы событий</span>
+            <pre><code><span class="comment">// События мыши</span>
+<span class="variable">element</span>.<span class="function">addEventListener</span>(<span class="string">"click"</span>, <span class="variable">handler</span>);
+<span class="variable">element</span>.<span class="function">addEventListener</span>(<span class="string">"dblclick"</span>, <span class="variable">handler</span>);
+<span class="variable">element</span>.<span class="function">addEventListener</span>(<span class="string">"mousedown"</span>, <span class="variable">handler</span>);
+<span class="variable">element</span>.<span class="function">addEventListener</span>(<span class="string">"mouseup"</span>, <span class="variable">handler</span>);
+<span class="variable">element</span>.<span class="function">addEventListener</span>(<span class="string">"mouseenter"</span>, <span class="variable">handler</span>);  <span class="comment">// Не всплывает</span>
+<span class="variable">element</span>.<span class="function">addEventListener</span>(<span class="string">"mouseleave"</span>, <span class="variable">handler</span>);  <span class="comment">// Не всплывает</span>
+<span class="variable">element</span>.<span class="function">addEventListener</span>(<span class="string">"mouseover"</span>, <span class="variable">handler</span>);  <span class="comment">// Всплывает</span>
+<span class="variable">element</span>.<span class="function">addEventListener</span>(<span class="string">"mouseout"</span>, <span class="variable">handler</span>);   <span class="comment">// Всплывает</span>
+<span class="variable">element</span>.<span class="function">addEventListener</span>(<span class="string">"mousemove"</span>, <span class="variable">handler</span>);
+<span class="variable">element</span>.<span class="function">addEventListener</span>(<span class="string">"contextmenu"</span>, <span class="variable">handler</span>);  <span class="comment">// Правый клик</span>
+
+<span class="comment">// События клавиатуры</span>
+<span class="variable">element</span>.<span class="function">addEventListener</span>(<span class="string">"keydown"</span>, <span class="function">function</span>(<span class="variable">e</span>) {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="variable">e</span>.<span class="variable">key</span>);        <span class="comment">// "a", "Enter", "Escape"</span>
+    <span class="function">console</span>.<span class="function">log</span>(<span class="variable">e</span>.<span class="variable">code</span>);       <span class="comment">// "KeyA", "Enter", "Escape"</span>
+    <span class="function">console</span>.<span class="function">log</span>(<span class="variable">e</span>.<span class="variable">keyCode</span>);    <span class="comment">// 65 (устаревшее)</span>
+});
+<span class="variable">element</span>.<span class="function">addEventListener</span>(<span class="string">"keyup"</span>, <span class="variable">handler</span>);
+<span class="variable">element</span>.<span class="function">addEventListener</span>(<span class="string">"keypress"</span>, <span class="variable">handler</span>);  <span class="comment">// Устаревшее</span>
+
+<span class="comment">// События формы</span>
+<span class="variable">form</span>.<span class="function">addEventListener</span>(<span class="string">"submit"</span>, <span class="function">function</span>(<span class="variable">e</span>) {
+    <span class="variable">e</span>.<span class="function">preventDefault</span>();  <span class="comment">// Предотвратить отправку</span>
+});
+<span class="variable">input</span>.<span class="function">addEventListener</span>(<span class="string">"input"</span>, <span class="variable">handler</span>);  <span class="comment">// При изменении</span>
+<span class="variable">input</span>.<span class="function">addEventListener</span>(<span class="string">"change"</span>, <span class="variable">handler</span>);  <span class="comment">// При потере фокуса</span>
+<span class="variable">input</span>.<span class="function">addEventListener</span>(<span class="string">"focus"</span>, <span class="variable">handler</span>);
+<span class="variable">input</span>.<span class="function">addEventListener</span>(<span class="string">"blur"</span>, <span class="variable">handler</span>);
+
+<span class="comment">// События загрузки</span>
+<span class="function">window</span>.<span class="function">addEventListener</span>(<span class="string">"load"</span>, <span class="variable">handler</span>);
+<span class="function">window</span>.<span class="function">addEventListener</span>(<span class="string">"DOMContentLoaded"</span>, <span class="variable">handler</span>);  <span class="comment">// Раньше, чем load</span>
+<span class="variable">img</span>.<span class="function">addEventListener</span>(<span class="string">"load"</span>, <span class="variable">handler</span>);
+<span class="variable">img</span>.<span class="function">addEventListener</span>(<span class="string">"error"</span>, <span class="variable">handler</span>);
+
+<span class="comment">// События скролла</span>
+<span class="function">window</span>.<span class="function">addEventListener</span>(<span class="string">"scroll"</span>, <span class="function">function</span>() {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="function">window</span>.<span class="variable">scrollY</span>);
+}, { <span class="variable">passive</span>: <span class="keyword">true</span> });  <span class="comment">// Важно для производительности!</span></code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Кастомные события</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 8: Создание и диспатч событий</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">button</span> = <span class="function">document</span>.<span class="function">querySelector</span>(<span class="string">"button"</span>);
+
+<span class="comment">// Простое кастомное событие</span>
+<span class="keyword">const</span> <span class="variable">customEvent</span> = <span class="keyword">new</span> <span class="function">CustomEvent</span>(<span class="string">"myEvent"</span>);
+<span class="variable">button</span>.<span class="function">dispatchEvent</span>(<span class="variable">customEvent</span>);
+
+<span class="comment">// С данными</span>
+<span class="keyword">const</span> <span class="variable">eventWithData</span> = <span class="keyword">new</span> <span class="function">CustomEvent</span>(<span class="string">"myEvent"</span>, {
+    <span class="variable">detail</span>: {
+        <span class="variable">message</span>: <span class="string">"Привет!"</span>,
+        <span class="variable">data</span>: { <span class="variable">id</span>: <span class="number">123</span> }
+    },
+    <span class="variable">bubbles</span>: <span class="keyword">true</span>,  <span class="comment">// Всплывает</span>
+    <span class="variable">cancelable</span>: <span class="keyword">true</span>  <span class="comment">// Можно отменить</span>
+});
+
+<span class="variable">button</span>.<span class="function">addEventListener</span>(<span class="string">"myEvent"</span>, <span class="function">function</span>(<span class="variable">e</span>) {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="variable">e</span>.<span class="variable">detail</span>.<span class="variable">message</span>);  <span class="comment">// "Привет!"</span>
+});
+
+<span class="variable">button</span>.<span class="function">dispatchEvent</span>(<span class="variable">eventWithData</span>);
+
+<span class="comment">// Event() конструктор (альтернатива)</span>
+<span class="keyword">const</span> <span class="variable">event</span> = <span class="keyword">new</span> <span class="function">Event</span>(<span class="string">"build"</span>, { <span class="variable">bubbles</span>: <span class="keyword">true</span> });
+<span class="variable">element</span>.<span class="function">dispatchEvent</span>(<span class="variable">event</span>);</code></pre>
+        </div>
+    </div>
+
+    <div class="tip">
+        <strong>Совет:</strong> Используйте делегирование событий для динамических списков - это более эффективно и работает для элементов, добавленных позже. Всегда используйте addEventListener вместо onclick для гибкости.
+    </div>
+</div>
+

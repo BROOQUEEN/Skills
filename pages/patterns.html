@@ -1,0 +1,133 @@
+<div class="container">
+    <a href="#" class="back-button">← Назад к списку тем</a>
+    
+    <div class="page-header">
+        <h1>🎨 Паттерны проектирования</h1>
+        <p>Модуль, Singleton, Factory, Observer и другие полезные паттерны для организации кода</p>
+    </div>
+
+    <div class="content-section">
+        <h2>Модульный паттерн</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 1: Модуль (IIFE)</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">MyModule</span> = (<span class="function">function</span>() {
+    <span class="comment">// Приватные переменные</span>
+    <span class="keyword">let</span> <span class="variable">privateVar</span> = <span class="number">0</span>;
+    
+    <span class="comment">// Приватные функции</span>
+    <span class="function">function</span> <span class="function">privateFunction</span>() {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Приватная функция"</span>);
+    }
+    
+    <span class="comment">// Публичный API</span>
+    <span class="keyword">return</span> {
+        <span class="function">increment</span>() {
+            <span class="variable">privateVar</span>++;
+        },
+        <span class="function">getValue</span>() {
+            <span class="keyword">return</span> <span class="variable">privateVar</span>;
+        }
+    };
+})();
+
+<span class="variable">MyModule</span>.<span class="function">increment</span>();
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">MyModule</span>.<span class="function">getValue</span>());  <span class="comment">// 1</span>
+<span class="comment">// MyModule.privateVar;  // undefined (приватная!)</span></code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Singleton</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 2: Singleton</span>
+            <pre><code><span class="keyword">class</span> <span class="class-name">Singleton</span> {
+    <span class="keyword">static</span> <span class="variable">instance</span> = <span class="keyword">null</span>;
+    
+    <span class="function">constructor</span>() {
+        <span class="keyword">if</span> (<span class="function">Singleton</span>.<span class="variable">instance</span>) {
+            <span class="keyword">return</span> <span class="function">Singleton</span>.<span class="variable">instance</span>;
+        }
+        <span class="function">Singleton</span>.<span class="variable">instance</span> = <span class="keyword">this</span>;
+        <span class="keyword">this</span>.<span class="variable">data</span> = <span class="string">"Данные"</span>;
+    }
+    
+    <span class="keyword">static</span> <span class="function">getInstance</span>() {
+        <span class="keyword">if</span> (!<span class="function">Singleton</span>.<span class="variable">instance</span>) {
+            <span class="function">Singleton</span>.<span class="variable">instance</span> = <span class="keyword">new</span> <span class="function">Singleton</span>();
+        }
+        <span class="keyword">return</span> <span class="function">Singleton</span>.<span class="variable">instance</span>;
+    }
+}
+
+<span class="keyword">const</span> <span class="variable">s1</span> = <span class="function">Singleton</span>.<span class="function">getInstance</span>();
+<span class="keyword">const</span> <span class="variable">s2</span> = <span class="function">Singleton</span>.<span class="function">getInstance</span>();
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">s1</span> === <span class="variable">s2</span>);  <span class="comment">// true (один и тот же объект)</span></code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Factory</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 3: Фабрика</span>
+            <pre><code><span class="function">function</span> <span class="function">createUser</span>(<span class="variable">type</span>, <span class="variable">name</span>) {
+    <span class="keyword">if</span> (<span class="variable">type</span> === <span class="string">"admin"</span>) {
+        <span class="keyword">return</span> {
+            <span class="variable">name</span>,
+            <span class="variable">role</span>: <span class="string">"admin"</span>,
+            <span class="function">permissions</span>: [<span class="string">"read"</span>, <span class="string">"write"</span>, <span class="string">"delete"</span>]
+        };
+    } <span class="keyword">else if</span> (<span class="variable">type</span> === <span class="string">"user"</span>) {
+        <span class="keyword">return</span> {
+            <span class="variable">name</span>,
+            <span class="variable">role</span>: <span class="string">"user"</span>,
+            <span class="function">permissions</span>: [<span class="string">"read"</span>]
+        };
+    }
+    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="function">Error</span>(<span class="string">`Неизвестный тип: ${type}`</span>);
+}
+
+<span class="keyword">const</span> <span class="variable">admin</span> = <span class="function">createUser</span>(<span class="string">"admin"</span>, <span class="string">"Иван"</span>);
+<span class="keyword">const</span> <span class="variable">user</span> = <span class="function">createUser</span>(<span class="string">"user"</span>, <span class="string">"Петр"</span>);</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Observer</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 4: Наблюдатель</span>
+            <pre><code><span class="keyword">class</span> <span class="class-name">EventEmitter</span> {
+    <span class="function">constructor</span>() {
+        <span class="keyword">this</span>.<span class="variable">events</span> = {};
+    }
+    
+    <span class="function">on</span>(<span class="variable">event</span>, <span class="variable">callback</span>) {
+        <span class="keyword">if</span> (!<span class="keyword">this</span>.<span class="variable">events</span>[<span class="variable">event</span>]) {
+            <span class="keyword">this</span>.<span class="variable">events</span>[<span class="variable">event</span>] = [];
+        }
+        <span class="keyword">this</span>.<span class="variable">events</span>[<span class="variable">event</span>].<span class="function">push</span>(<span class="variable">callback</span>);
+    }
+    
+    <span class="function">emit</span>(<span class="variable">event</span>, <span class="variable">data</span>) {
+        <span class="keyword">if</span> (<span class="keyword">this</span>.<span class="variable">events</span>[<span class="variable">event</span>]) {
+            <span class="keyword">this</span>.<span class="variable">events</span>[<span class="variable">event</span>].<span class="function">forEach</span>(<span class="variable">callback</span> =&gt; <span class="variable">callback</span>(<span class="variable">data</span>));
+        }
+    }
+    
+    <span class="function">off</span>(<span class="variable">event</span>, <span class="variable">callback</span>) {
+        <span class="keyword">if</span> (<span class="keyword">this</span>.<span class="variable">events</span>[<span class="variable">event</span>]) {
+            <span class="keyword">this</span>.<span class="variable">events</span>[<span class="variable">event</span>] = <span class="keyword">this</span>.<span class="variable">events</span>[<span class="variable">event</span>].<span class="function">filter</span>(<span class="variable">cb</span> =&gt; <span class="variable">cb</span> !== <span class="variable">callback</span>);
+        }
+    }
+}
+
+<span class="keyword">const</span> <span class="variable">emitter</span> = <span class="keyword">new</span> <span class="function">EventEmitter</span>();
+<span class="variable">emitter</span>.<span class="function">on</span>(<span class="string">"data"</span>, (<span class="variable">data</span>) =&gt; <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Получено:"</span>, <span class="variable">data</span>));
+<span class="variable">emitter</span>.<span class="function">emit</span>(<span class="string">"data"</span>, <span class="string">"привет"</span>);  <span class="comment">// "Получено: привет"</span></code></pre>
+        </div>
+    </div>
+</div>
+

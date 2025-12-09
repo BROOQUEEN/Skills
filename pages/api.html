@@ -1,0 +1,251 @@
+<div class="container">
+    <a href="#" class="back-button">← Назад к списку тем</a>
+    
+    <div class="page-header">
+        <h1>🌐 Работа с API</h1>
+        <p>Fetch API, XMLHttpRequest, обработка ответов, ошибок и работа с различными форматами данных</p>
+    </div>
+
+    <div class="content-section">
+        <h2>Fetch API</h2>
+        <p>Современный способ работы с HTTP запросами. Основан на Promises.</p>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 1: Базовый GET запрос</span>
+            <pre><code><span class="comment">// Простой GET запрос</span>
+<span class="function">fetch</span>(<span class="string">"https://api.example.com/users"</span>)
+    .<span class="function">then</span>(<span class="variable">response</span> =&gt; <span class="variable">response</span>.<span class="function">json</span>())
+    .<span class="function">then</span>(<span class="variable">data</span> =&gt; {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="variable">data</span>);
+    })
+    .<span class="function">catch</span>(<span class="variable">error</span> =&gt; {
+        <span class="function">console</span>.<span class="function">error</span>(<span class="string">"Ошибка:"</span>, <span class="variable">error</span>);
+    });
+
+<span class="comment">// С async/await</span>
+<span class="keyword">async</span> <span class="function">function</span> <span class="function">getUsers</span>() {
+    <span class="keyword">try</span> {
+        <span class="keyword">const</span> <span class="variable">response</span> = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">"https://api.example.com/users"</span>);
+        <span class="keyword">const</span> <span class="variable">data</span> = <span class="keyword">await</span> <span class="variable">response</span>.<span class="function">json</span>();
+        <span class="function">console</span>.<span class="function">log</span>(<span class="variable">data</span>);
+    } <span class="keyword">catch</span> (<span class="variable">error</span>) {
+        <span class="function">console</span>.<span class="function">error</span>(<span class="string">"Ошибка:"</span>, <span class="variable">error</span>);
+    }
+}</code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 2: POST запрос</span>
+            <pre><code><span class="comment">// POST с JSON</span>
+<span class="keyword">async</span> <span class="function">function</span> <span class="function">createUser</span>(<span class="variable">userData</span>) {
+    <span class="keyword">try</span> {
+        <span class="keyword">const</span> <span class="variable">response</span> = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">"https://api.example.com/users"</span>, {
+            <span class="variable">method</span>: <span class="string">"POST"</span>,
+            <span class="variable">headers</span>: {
+                <span class="string">"Content-Type"</span>: <span class="string">"application/json"</span>
+            },
+            <span class="variable">body</span>: <span class="function">JSON</span>.<span class="function">stringify</span>(<span class="variable">userData</span>)
+        });
+        
+        <span class="keyword">if</span> (!<span class="variable">response</span>.<span class="variable">ok</span>) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="function">Error</span>(<span class="string">`HTTP ${response.status}`</span>);
+        }
+        
+        <span class="keyword">const</span> <span class="variable">data</span> = <span class="keyword">await</span> <span class="variable">response</span>.<span class="function">json</span>();
+        <span class="keyword">return</span> <span class="variable">data</span>;
+    } <span class="keyword">catch</span> (<span class="variable">error</span>) {
+        <span class="function">console</span>.<span class="function">error</span>(<span class="string">"Ошибка создания пользователя:"</span>, <span class="variable">error</span>);
+        <span class="keyword">throw</span> <span class="variable">error</span>;
+    }
+}
+
+<span class="keyword">const</span> <span class="variable">newUser</span> = {
+    <span class="variable">name</span>: <span class="string">"Иван"</span>,
+    <span class="variable">email</span>: <span class="string">"ivan@example.com"</span>
+};
+
+<span class="function">createUser</span>(<span class="variable">newUser</span>);</code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 3: Обработка ошибок</span>
+            <pre><code><span class="comment">// Важно: fetch не отклоняет Promise при HTTP ошибках!</span>
+<span class="function">fetch</span>(<span class="string">"https://api.example.com/users"</span>)
+    .<span class="function">then</span>(<span class="variable">response</span> =&gt; {
+        <span class="keyword">if</span> (!<span class="variable">response</span>.<span class="variable">ok</span>) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="function">Error</span>(<span class="string">`HTTP ${response.status}: ${response.statusText}`</span>);
+        }
+        <span class="keyword">return</span> <span class="variable">response</span>.<span class="function">json</span>();
+    })
+    .<span class="function">then</span>(<span class="variable">data</span> =&gt; {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="variable">data</span>);
+    })
+    .<span class="function">catch</span>(<span class="variable">error</span> =&gt; {
+        <span class="keyword">if</span> (<span class="variable">error</span>.<span class="variable">name</span> === <span class="string">"TypeError"</span>) {
+            <span class="function">console</span>.<span class="function">error</span>(<span class="string">"Сетевая ошибка или CORS"</span>);
+        } <span class="keyword">else</span> {
+            <span class="function">console</span>.<span class="function">error</span>(<span class="string">"Ошибка:"</span>, <span class="variable">error</span>.<span class="variable">message</span>);
+        }
+    });
+
+<span class="comment">// Вспомогательная функция</span>
+<span class="keyword">async</span> <span class="function">function</span> <span class="function">fetchJSON</span>(<span class="variable">url</span>, <span class="variable">options</span> = {}) {
+    <span class="keyword">const</span> <span class="variable">response</span> = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="variable">url</span>, <span class="variable">options</span>);
+    
+    <span class="keyword">if</span> (!<span class="variable">response</span>.<span class="variable">ok</span>) {
+        <span class="keyword">const</span> <span class="variable">error</span> = <span class="keyword">new</span> <span class="function">Error</span>(<span class="string">`HTTP ${response.status}`</span>);
+        <span class="variable">error</span>.<span class="variable">status</span> = <span class="variable">response</span>.<span class="variable">status</span>;
+        <span class="variable">error</span>.<span class="variable">response</span> = <span class="variable">response</span>;
+        <span class="keyword">throw</span> <span class="variable">error</span>;
+    }
+    
+    <span class="keyword">return</span> <span class="keyword">await</span> <span class="variable">response</span>.<span class="function">json</span>();
+}</code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 4: Различные типы ответов</span>
+            <pre><code><span class="keyword">async</span> <span class="function">function</span> <span class="function">handleResponse</span>(<span class="variable">url</span>) {
+    <span class="keyword">const</span> <span class="variable">response</span> = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="variable">url</span>);
+    
+    <span class="comment">// Проверка типа контента</span>
+    <span class="keyword">const</span> <span class="variable">contentType</span> = <span class="variable">response</span>.<span class="variable">headers</span>.<span class="function">get</span>(<span class="string">"content-type"</span>);
+    
+    <span class="keyword">if</span> (<span class="variable">contentType</span>?.<span class="function">includes</span>(<span class="string">"application/json"</span>)) {
+        <span class="keyword">return</span> <span class="keyword">await</span> <span class="variable">response</span>.<span class="function">json</span>();
+    } <span class="keyword">else if</span> (<span class="variable">contentType</span>?.<span class="function">includes</span>(<span class="string">"text"</span>)) {
+        <span class="keyword">return</span> <span class="keyword">await</span> <span class="variable">response</span>.<span class="function">text</span>();
+    } <span class="keyword">else if</span> (<span class="variable">contentType</span>?.<span class="function">includes</span>(<span class="string">"blob"</span>)) {
+        <span class="keyword">return</span> <span class="keyword">await</span> <span class="variable">response</span>.<span class="function">blob</span>();
+    } <span class="keyword">else</span> {
+        <span class="keyword">return</span> <span class="keyword">await</span> <span class="variable">response</span>.<span class="function">arrayBuffer</span>();
+    }
+}
+
+<span class="comment">// Загрузка файла</span>
+<span class="keyword">async</span> <span class="function">function</span> <span class="function">downloadFile</span>(<span class="variable">url</span>, <span class="variable">filename</span>) {
+    <span class="keyword">const</span> <span class="variable">response</span> = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="variable">url</span>);
+    <span class="keyword">const</span> <span class="variable">blob</span> = <span class="keyword">await</span> <span class="variable">response</span>.<span class="function">blob</span>();
+    <span class="keyword">const</span> <span class="variable">objectUrl</span> = <span class="function">URL</span>.<span class="function">createObjectURL</span>(<span class="variable">blob</span>);
+    
+    <span class="keyword">const</span> <span class="variable">a</span> = <span class="function">document</span>.<span class="function">createElement</span>(<span class="string">"a"</span>);
+    <span class="variable">a</span>.<span class="variable">href</span> = <span class="variable">objectUrl</span>;
+    <span class="variable">a</span>.<span class="variable">download</span> = <span class="variable">filename</span>;
+    <span class="variable">a</span>.<span class="function">click</span>();
+    
+    <span class="function">URL</span>.<span class="function">revokeObjectURL</span>(<span class="variable">objectUrl</span>);
+}</code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 5: Загрузка файла (FormData)</span>
+            <pre><code><span class="keyword">async</span> <span class="function">function</span> <span class="function">uploadFile</span>(<span class="variable">file</span>) {
+    <span class="keyword">const</span> <span class="variable">formData</span> = <span class="keyword">new</span> <span class="function">FormData</span>();
+    <span class="variable">formData</span>.<span class="function">append</span>(<span class="string">"file"</span>, <span class="variable">file</span>);
+    <span class="variable">formData</span>.<span class="function">append</span>(<span class="string">"description"</span>, <span class="string">"Мое изображение"</span>);
+    
+    <span class="keyword">const</span> <span class="variable">response</span> = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">"https://api.example.com/upload"</span>, {
+        <span class="variable">method</span>: <span class="string">"POST"</span>,
+        <span class="comment">// Не указываем Content-Type! Браузер установит с boundary</span>
+        <span class="variable">body</span>: <span class="variable">formData</span>
+    });
+    
+    <span class="keyword">return</span> <span class="keyword">await</span> <span class="variable">response</span>.<span class="function">json</span>();
+}</code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 6: Заголовки и опции</span>
+            <pre><code><span class="keyword">async</span> <span class="function">function</span> <span class="function">apiCall</span>(<span class="variable">url</span>, <span class="variable">token</span>) {
+    <span class="keyword">const</span> <span class="variable">response</span> = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="variable">url</span>, {
+        <span class="variable">method</span>: <span class="string">"GET"</span>,
+        <span class="variable">headers</span>: {
+            <span class="string">"Authorization"</span>: <span class="string">`Bearer ${token}`</span>,
+            <span class="string">"Content-Type"</span>: <span class="string">"application/json"</span>,
+            <span class="string">"X-Custom-Header"</span>: <span class="string">"value"</span>
+        },
+        <span class="variable">credentials</span>: <span class="string">"include"</span>,  <span class="comment">// Отправлять cookies</span>
+        <span class="comment">// credentials: "same-origin" - только для same-origin</span>
+        <span class="comment">// credentials: "omit" - не отправлять</span>
+        <span class="variable">mode</span>: <span class="string">"cors"</span>,  <span class="comment">// cors, no-cors, same-origin</span>
+        <span class="variable">cache</span>: <span class="string">"no-cache"</span>,  <span class="comment">// no-cache, reload, force-cache</span>
+        <span class="variable">redirect</span>: <span class="string">"follow"</span>  <span class="comment">// follow, error, manual</span>
+    });
+    
+    <span class="keyword">return</span> <span class="keyword">await</span> <span class="variable">response</span>.<span class="function">json</span>();
+}</code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 7: Параллельные запросы</span>
+            <pre><code><span class="comment">// Параллельные запросы</span>
+<span class="keyword">async</span> <span class="function">function</span> <span class="function">loadUserData</span>(<span class="variable">userId</span>) {
+    <span class="keyword">const</span> [<span class="variable">user</span>, <span class="variable">posts</span>, <span class="variable">comments</span>] = <span class="keyword">await</span> <span class="function">Promise</span>.<span class="function">all</span>([
+        <span class="function">fetch</span>(<span class="string">`/api/users/${userId}`</span>).<span class="function">then</span>(<span class="variable">r</span> =&gt; <span class="variable">r</span>.<span class="function">json</span>()),
+        <span class="function">fetch</span>(<span class="string">`/api/users/${userId}/posts`</span>).<span class="function">then</span>(<span class="variable">r</span> =&gt; <span class="variable">r</span>.<span class="function">json</span>()),
+        <span class="function">fetch</span>(<span class="string">`/api/users/${userId}/comments`</span>).<span class="function">then</span>(<span class="variable">r</span> =&gt; <span class="variable">r</span>.<span class="function">json</span>())
+    ]);
+    
+    <span class="keyword">return</span> { <span class="variable">user</span>, <span class="variable">posts</span>, <span class="variable">comments</span> };
+}
+
+<span class="comment">// С обработкой ошибок</span>
+<span class="keyword">async</span> <span class="function">function</span> <span class="function">loadUserDataSafe</span>(<span class="variable">userId</span>) {
+    <span class="keyword">const</span> <span class="variable">results</span> = <span class="keyword">await</span> <span class="function">Promise</span>.<span class="function">allSettled</span>([
+        <span class="function">fetch</span>(<span class="string">`/api/users/${userId}`</span>).<span class="function">then</span>(<span class="variable">r</span> =&gt; <span class="variable">r</span>.<span class="function">json</span>()),
+        <span class="function">fetch</span>(<span class="string">`/api/users/${userId}/posts`</span>).<span class="function">then</span>(<span class="variable">r</span> =&gt; <span class="variable">r</span>.<span class="function">json</span>()),
+        <span class="function">fetch</span>(<span class="string">`/api/users/${userId}/comments`</span>).<span class="function">then</span>(<span class="variable">r</span> =&gt; <span class="variable">r</span>.<span class="function">json</span>())
+    ]);
+    
+    <span class="keyword">return</span> {
+        <span class="variable">user</span>: <span class="variable">results</span>[<span class="number">0</span>].<span class="variable">status</span> === <span class="string">"fulfilled"</span> ? <span class="variable">results</span>[<span class="number">0</span>].<span class="variable">value</span> : <span class="keyword">null</span>,
+        <span class="variable">posts</span>: <span class="variable">results</span>[<span class="number">1</span>].<span class="variable">status</span> === <span class="string">"fulfilled"</span> ? <span class="variable">results</span>[<span class="number">1</span>].<span class="variable">value</span> : [],
+        <span class="variable">comments</span>: <span class="variable">results</span>[<span class="number">2</span>].<span class="variable">status</span> === <span class="string">"fulfilled"</span> ? <span class="variable">results</span>[<span class="number">2</span>].<span class="variable">value</span> : []
+    };
+}</code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 8: AbortController - отмена запроса</span>
+            <pre><code><span class="comment">// Создание контроллера</span>
+<span class="keyword">const</span> <span class="variable">controller</span> = <span class="keyword">new</span> <span class="function">AbortController</span>();
+<span class="keyword">const</span> <span class="variable">signal</span> = <span class="variable">controller</span>.<span class="variable">signal</span>;
+
+<span class="comment">// Запрос с сигналом</span>
+<span class="function">fetch</span>(<span class="string">"https://api.example.com/data"</span>, {
+    <span class="variable">signal</span>: <span class="variable">signal</span>
+})
+    .<span class="function">then</span>(<span class="variable">response</span> =&gt; <span class="variable">response</span>.<span class="function">json</span>())
+    .<span class="function">then</span>(<span class="variable">data</span> =&gt; <span class="function">console</span>.<span class="function">log</span>(<span class="variable">data</span>))
+    .<span class="function">catch</span>(<span class="variable">error</span> =&gt; {
+        <span class="keyword">if</span> (<span class="variable">error</span>.<span class="variable">name</span> === <span class="string">"AbortError"</span>) {
+            <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Запрос отменен"</span>);
+        }
+    });
+
+<span class="comment">// Отмена запроса</span>
+<span class="variable">controller</span>.<span class="function">abort</span>();
+
+<span class="comment">// Пример с таймаутом</span>
+<span class="function">function</span> <span class="function">fetchWithTimeout</span>(<span class="variable">url</span>, <span class="variable">timeout</span> = <span class="number">5000</span>) {
+    <span class="keyword">const</span> <span class="variable">controller</span> = <span class="keyword">new</span> <span class="function">AbortController</span>();
+    <span class="keyword">const</span> <span class="variable">timeoutId</span> = <span class="function">setTimeout</span>(() =&gt; <span class="variable">controller</span>.<span class="function">abort</span>(), <span class="variable">timeout</span>);
+    
+    <span class="keyword">return</span> <span class="function">fetch</span>(<span class="variable">url</span>, { <span class="variable">signal</span>: <span class="variable">controller</span>.<span class="variable">signal</span> })
+        .<span class="function">then</span>(<span class="variable">response</span> =&gt; {
+            <span class="function">clearTimeout</span>(<span class="variable">timeoutId</span>);
+            <span class="keyword">return</span> <span class="variable">response</span>;
+        })
+        .<span class="function">catch</span>(<span class="variable">error</span> =&gt; {
+            <span class="function">clearTimeout</span>(<span class="variable">timeoutId</span>);
+            <span class="keyword">throw</span> <span class="variable">error</span>;
+        });
+}</code></pre>
+        </div>
+
+        <div class="warning">
+            <strong>Внимание:</strong> Fetch не отклоняет Promise при HTTP ошибках (404, 500 и т.д.). Всегда проверяйте response.ok или response.status. Не забудьте обработать сетевые ошибки отдельно.
+        </div>
+    </div>
+</div>
+

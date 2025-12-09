@@ -1,0 +1,318 @@
+<div class="container">
+    <a href="#" class="back-button">← Назад к списку тем</a>
+    
+    <div class="page-header">
+        <h1>⚙️ Функции</h1>
+        <p>Функции - основа JavaScript. Изучаем объявление функций, стрелочные функции, замыкания, каррирование и многое другое</p>
+    </div>
+
+    <div class="content-section">
+        <h2>Объявление функций</h2>
+        <p>В JavaScript есть несколько способов объявления функций:</p>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 1: Function Declaration</span>
+            <pre><code><span class="comment">// Function Declaration (поднимается вверх - hoisting)</span>
+<span class="function">function</span> <span class="function">greet</span>(<span class="variable">name</span>) {
+    <span class="keyword">return</span> <span class="string">`Привет, ${name}!`</span>;
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">greet</span>(<span class="string">"Иван"</span>));  <span class="comment">// "Привет, Иван!"</span>
+
+<span class="comment">// Можно вызвать до объявления (hoisting)</span>
+<span class="function">sayHello</span>();  <span class="comment">// Работает!</span>
+
+<span class="function">function</span> <span class="function">sayHello</span>() {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Привет!"</span>);
+}</code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 2: Function Expression</span>
+            <pre><code><span class="comment">// Function Expression</span>
+<span class="keyword">const</span> <span class="variable">greet</span> = <span class="function">function</span>(<span class="variable">name</span>) {
+    <span class="keyword">return</span> <span class="string">`Привет, ${name}!`</span>;
+};
+
+<span class="comment">// Анонимная функция</span>
+<span class="keyword">const</span> <span class="variable">add</span> = <span class="function">function</span>(<span class="variable">a</span>, <span class="variable">b</span>) {
+    <span class="keyword">return</span> <span class="variable">a</span> + <span class="variable">b</span>;
+};
+
+<span class="comment">// Named Function Expression (удобно для отладки)</span>
+<span class="keyword">const</span> <span class="variable">multiply</span> = <span class="function">function</span> <span class="function">mult</span>(<span class="variable">a</span>, <span class="variable">b</span>) {
+    <span class="keyword">return</span> <span class="variable">a</span> * <span class="variable">b</span>;
+};</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Стрелочные функции (Arrow Functions)</h2>
+        <p>Современный синтаксис ES6, более короткий и с особенностями работы с <code>this</code>:</p>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 3: Стрелочные функции</span>
+            <pre><code><span class="comment">// Обычная функция</span>
+<span class="keyword">const</span> <span class="variable">add1</span> = <span class="function">function</span>(<span class="variable">a</span>, <span class="variable">b</span>) {
+    <span class="keyword">return</span> <span class="variable">a</span> + <span class="variable">b</span>;
+};
+
+<span class="comment">// Стрелочная функция (полная форма)</span>
+<span class="keyword">const</span> <span class="variable">add2</span> = (<span class="variable">a</span>, <span class="variable">b</span>) =&gt; {
+    <span class="keyword">return</span> <span class="variable">a</span> + <span class="variable">b</span>;
+};
+
+<span class="comment">// Сокращенная форма (когда тело одно выражение)</span>
+<span class="keyword">const</span> <span class="variable">add3</span> = (<span class="variable">a</span>, <span class="variable">b</span>) =&gt; <span class="variable">a</span> + <span class="variable">b</span>;
+
+<span class="comment">// С одним параметром (скобки можно опустить)</span>
+<span class="keyword">const</span> <span class="variable">square</span> = <span class="variable">x</span> =&gt; <span class="variable">x</span> * <span class="variable">x</span>;
+
+<span class="comment">// Без параметров (скобки обязательны)</span>
+<span class="keyword">const</span> <span class="variable">getRandom</span> = () =&gt; <span class="function">Math</span>.<span class="function">random</span>();
+
+<span class="comment">// Возврат объекта (нужны скобки)</span>
+<span class="keyword">const</span> <span class="variable">createUser</span> = (<span class="variable">name</span>, <span class="variable">age</span>) =&gt; ({ <span class="variable">name</span>, <span class="variable">age</span> });</code></pre>
+        </div>
+
+        <div class="note">
+            <strong>Важно:</strong> Стрелочные функции не имеют своего <code>this</code>, <code>arguments</code>, и не могут быть конструкторами. Они наследуют <code>this</code> из внешней области видимости.
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Параметры функций</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 4: Параметры по умолчанию</span>
+            <pre><code><span class="comment">// ES5 способ (старый)</span>
+<span class="function">function</span> <span class="function">greet</span>(<span class="variable">name</span>) {
+    <span class="variable">name</span> = <span class="variable">name</span> || <span class="string">"Гость"</span>;
+    <span class="keyword">return</span> <span class="string">`Привет, ${name}!`</span>;
+}
+
+<span class="comment">// ES6 способ (современный)</span>
+<span class="function">function</span> <span class="function">greet</span>(<span class="variable">name</span> = <span class="string">"Гость"</span>) {
+    <span class="keyword">return</span> <span class="string">`Привет, ${name}!`</span>;
+}
+
+<span class="function">greet</span>();           <span class="comment">// "Привет, Гость!"</span>
+<span class="function">greet</span>(<span class="string">"Иван"</span>);    <span class="comment">// "Привет, Иван!"</span>
+
+<span class="comment">// Можно использовать выражения</span>
+<span class="function">function</span> <span class="function">createId</span>(<span class="variable">prefix</span> = <span class="string">"id"</span>, <span class="variable">suffix</span> = <span class="function">Date</span>.<span class="function">now</span>()) {
+    <span class="keyword">return</span> <span class="string">`${prefix}-${suffix}`</span>;
+}</code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 5: Rest параметры</span>
+            <pre><code><span class="comment">// Rest параметр собирает оставшиеся аргументы в массив</span>
+<span class="function">function</span> <span class="function">sum</span>(<span class="variable">first</span>, <span class="variable">second</span>, ...<span class="variable">rest</span>) {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="variable">first</span>);   <span class="comment">// 1</span>
+    <span class="function">console</span>.<span class="function">log</span>(<span class="variable">second</span>);  <span class="comment">// 2</span>
+    <span class="function">console</span>.<span class="function">log</span>(<span class="variable">rest</span>);    <span class="comment">// [3, 4, 5]</span>
+    
+    <span class="keyword">return</span> <span class="variable">rest</span>.<span class="function">reduce</span>((<span class="variable">acc</span>, <span class="variable">val</span>) =&gt; <span class="variable">acc</span> + <span class="variable">val</span>, <span class="variable">first</span> + <span class="variable">second</span>);
+}
+
+<span class="function">sum</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>);  <span class="comment">// 15</span></code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Замыкания (Closures)</h2>
+        <p>Замыкание - это функция, которая имеет доступ к переменным внешней (охватывающей) функции, даже после того, как внешняя функция завершила выполнение.</p>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 6: Простое замыкание</span>
+            <pre><code><span class="function">function</span> <span class="function">outerFunction</span>(<span class="variable">x</span>) {
+    <span class="comment">// Внешняя область видимости</span>
+    <span class="keyword">const</span> <span class="variable">outerVariable</span> = <span class="string">"Я из внешней функции"</span>;
+    
+    <span class="comment">// Внутренняя функция (замыкание)</span>
+    <span class="function">function</span> <span class="function">innerFunction</span>(<span class="variable">y</span>) {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="variable">outerVariable</span>);  <span class="comment">// Имеет доступ к outerVariable</span>
+        <span class="function">console</span>.<span class="function">log</span>(<span class="variable">x</span> + <span class="variable">y</span>);            <span class="comment">// Имеет доступ к параметру x</span>
+    }
+    
+    <span class="keyword">return</span> <span class="variable">innerFunction</span>;
+}
+
+<span class="keyword">const</span> <span class="variable">closure</span> = <span class="function">outerFunction</span>(<span class="number">10</span>);
+<span class="variable">closure</span>(<span class="number">5</span>);  <span class="comment">// "Я из внешней функции", 15</span></code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 7: Практическое применение - счетчик</span>
+            <pre><code><span class="function">function</span> <span class="function">createCounter</span>() {
+    <span class="keyword">let</span> <span class="variable">count</span> = <span class="number">0</span>;  <span class="comment">// Приватная переменная</span>
+    
+    <span class="keyword">return</span> {
+        <span class="function">increment</span>: () =&gt; ++<span class="variable">count</span>,
+        <span class="function">decrement</span>: () =&gt; --<span class="variable">count</span>,
+        <span class="function">getCount</span>: () =&gt; <span class="variable">count</span>
+    };
+}
+
+<span class="keyword">const</span> <span class="variable">counter</span> = <span class="function">createCounter</span>();
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">counter</span>.<span class="function">getCount</span>());  <span class="comment">// 0</span>
+<span class="variable">counter</span>.<span class="function">increment</span>();
+<span class="variable">counter</span>.<span class="function">increment</span>();
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">counter</span>.<span class="function">getCount</span>());  <span class="comment">// 2</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">counter</span>.<span class="variable">count</span>);      <span class="comment">// undefined (приватная!)</span></code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 8: Классическая проблема циклов и замыканий</span>
+            <pre><code><span class="comment">// Проблема: все функции выведут 3</span>
+<span class="keyword">for</span> (<span class="keyword">var</span> <span class="variable">i</span> = <span class="number">0</span>; <span class="variable">i</span> &lt; <span class="number">3</span>; <span class="variable">i</span>++) {
+    <span class="function">setTimeout</span>(() =&gt; {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="variable">i</span>);  <span class="comment">// 3, 3, 3</span>
+    }, <span class="number">100</span>);
+}
+
+<span class="comment">// Решение 1: использовать let (блочная область видимости)</span>
+<span class="keyword">for</span> (<span class="keyword">let</span> <span class="variable">i</span> = <span class="number">0</span>; <span class="variable">i</span> &lt; <span class="number">3</span>; <span class="variable">i</span>++) {
+    <span class="function">setTimeout</span>(() =&gt; {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="variable">i</span>);  <span class="comment">// 0, 1, 2</span>
+    }, <span class="number">100</span>);
+}
+
+<span class="comment">// Решение 2: создать замыкание с IIFE</span>
+<span class="keyword">for</span> (<span class="keyword">var</span> <span class="variable">i</span> = <span class="number">0</span>; <span class="variable">i</span> &lt; <span class="number">3</span>; <span class="variable">i</span>++) {
+    (<span class="function">function</span>(<span class="variable">j</span>) {
+        <span class="function">setTimeout</span>(() =&gt; {
+            <span class="function">console</span>.<span class="function">log</span>(<span class="variable">j</span>);  <span class="comment">// 0, 1, 2</span>
+        }, <span class="number">100</span>);
+    })(<span class="variable">i</span>);
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Каррирование (Currying)</h2>
+        <p>Каррирование - преобразование функции с множественными аргументами в последовательность функций с одним аргументом.</p>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 9: Каррирование</span>
+            <pre><code><span class="comment">// Обычная функция</span>
+<span class="function">function</span> <span class="function">add</span>(<span class="variable">a</span>, <span class="variable">b</span>, <span class="variable">c</span>) {
+    <span class="keyword">return</span> <span class="variable">a</span> + <span class="variable">b</span> + <span class="variable">c</span>;
+}
+
+<span class="comment">// Каррированная версия</span>
+<span class="function">function</span> <span class="function">curryAdd</span>(<span class="variable">a</span>) {
+    <span class="keyword">return</span> <span class="function">function</span>(<span class="variable">b</span>) {
+        <span class="keyword">return</span> <span class="function">function</span>(<span class="variable">c</span>) {
+            <span class="keyword">return</span> <span class="variable">a</span> + <span class="variable">b</span> + <span class="variable">c</span>;
+        };
+    };
+}
+
+<span class="comment">// Использование</span>
+<span class="function">curryAdd</span>(<span class="number">1</span>)(<span class="number">2</span>)(<span class="number">3</span>);  <span class="comment">// 6</span>
+
+<span class="comment">// Можно частично применять</span>
+<span class="keyword">const</span> <span class="variable">addOne</span> = <span class="function">curryAdd</span>(<span class="number">1</span>);
+<span class="keyword">const</span> <span class="variable">addOneAndTwo</span> = <span class="variable">addOne</span>(<span class="number">2</span>);
+<span class="variable">addOneAndTwo</span>(<span class="number">3</span>);  <span class="comment">// 6</span>
+
+<span class="comment">// Стрелочная форма</span>
+<span class="keyword">const</span> <span class="variable">curryAddArrow</span> = <span class="variable">a</span> =&gt; <span class="variable">b</span> =&gt; <span class="variable">c</span> =&gt; <span class="variable">a</span> + <span class="variable">b</span> + <span class="variable">c</span>;</code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 10: Универсальная функция каррирования</span>
+            <pre><code><span class="function">function</span> <span class="function">curry</span>(<span class="variable">fn</span>) {
+    <span class="keyword">return</span> <span class="function">function</span> <span class="function">curried</span>(...<span class="variable">args</span>) {
+        <span class="keyword">if</span> (<span class="variable">args</span>.<span class="variable">length</span> &gt;= <span class="variable">fn</span>.<span class="variable">length</span>) {
+            <span class="keyword">return</span> <span class="variable">fn</span>.<span class="function">apply</span>(<span class="keyword">this</span>, <span class="variable">args</span>);
+        } <span class="keyword">else</span> {
+            <span class="keyword">return</span> <span class="function">function</span>(...<span class="variable">nextArgs</span>) {
+                <span class="keyword">return</span> <span class="variable">curried</span>.<span class="function">apply</span>(<span class="keyword">this</span>, <span class="variable">args</span>.<span class="function">concat</span>(<span class="variable">nextArgs</span>));
+            };
+        }
+    };
+}
+
+<span class="comment">// Использование</span>
+<span class="function">function</span> <span class="function">multiply</span>(<span class="variable">a</span>, <span class="variable">b</span>, <span class="variable">c</span>) {
+    <span class="keyword">return</span> <span class="variable">a</span> * <span class="variable">b</span> * <span class="variable">c</span>;
+}
+
+<span class="keyword">const</span> <span class="variable">curriedMultiply</span> = <span class="function">curry</span>(<span class="variable">multiply</span>);
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">curriedMultiply</span>(<span class="number">2</span>)(<span class="number">3</span>)(<span class="number">4</span>));  <span class="comment">// 24</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">curriedMultiply</span>(<span class="number">2</span>, <span class="number">3</span>)(<span class="number">4</span>));  <span class="comment">// 24</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">curriedMultiply</span>(<span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>));  <span class="comment">// 24</span></code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>IIFE (Immediately Invoked Function Expression)</h2>
+        <p>Функция, которая выполняется сразу после создания. Полезно для создания изолированной области видимости.</p>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 11: IIFE</span>
+            <pre><code><span class="comment">// Базовый синтаксис</span>
+(<span class="function">function</span>() {
+    <span class="keyword">const</span> <span class="variable">privateVar</span> = <span class="string">"Приватная переменная"</span>;
+    <span class="function">console</span>.<span class="function">log</span>(<span class="variable">privateVar</span>);
+})();
+
+<span class="comment">// С параметрами</span>
+(<span class="function">function</span>(<span class="variable">name</span>) {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">`Привет, ${name}!`</span>);
+})(<span class="string">"Иван"</span>);
+
+<span class="comment">// Стрелочная функция</span>
+(() =&gt; {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"IIFE со стрелочной функцией"</span>);
+})();
+
+<span class="comment">// С возвращаемым значением</span>
+<span class="keyword">const</span> <span class="variable">result</span> = (<span class="function">function</span>(<span class="variable">x</span>, <span class="variable">y</span>) {
+    <span class="keyword">return</span> <span class="variable">x</span> + <span class="variable">y</span>;
+})(<span class="number">5</span>, <span class="number">10</span>);
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">result</span>);  <span class="comment">// 15</span></code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Высокоуровневые функции (Higher-Order Functions)</h2>
+        <p>Функции, которые принимают другие функции как аргументы или возвращают функции.</p>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 12: HOF</span>
+            <pre><code><span class="comment">// Функция принимает другую функцию как аргумент</span>
+<span class="function">function</span> <span class="function">operate</span>(<span class="variable">a</span>, <span class="variable">b</span>, <span class="variable">operation</span>) {
+    <span class="keyword">return</span> <span class="variable">operation</span>(<span class="variable">a</span>, <span class="variable">b</span>);
+}
+
+<span class="keyword">const</span> <span class="variable">add</span> = (<span class="variable">x</span>, <span class="variable">y</span>) =&gt; <span class="variable">x</span> + <span class="variable">y</span>;
+<span class="keyword">const</span> <span class="variable">multiply</span> = (<span class="variable">x</span>, <span class="variable">y</span>) =&gt; <span class="variable">x</span> * <span class="variable">y</span>;
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">operate</span>(<span class="number">5</span>, <span class="number">3</span>, <span class="variable">add</span>));       <span class="comment">// 8</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">operate</span>(<span class="number">5</span>, <span class="number">3</span>, <span class="variable">multiply</span>));  <span class="comment">// 15</span>
+
+<span class="comment">// Функция возвращает другую функцию</span>
+<span class="function">function</span> <span class="function">createMultiplier</span>(<span class="variable">multiplier</span>) {
+    <span class="keyword">return</span> <span class="function">function</span>(<span class="variable">number</span>) {
+        <span class="keyword">return</span> <span class="variable">number</span> * <span class="variable">multiplier</span>;
+    };
+}
+
+<span class="keyword">const</span> <span class="variable">double</span> = <span class="function">createMultiplier</span>(<span class="number">2</span>);
+<span class="keyword">const</span> <span class="variable">triple</span> = <span class="function">createMultiplier</span>(<span class="number">3</span>);
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">double</span>(<span class="number">5</span>));  <span class="comment">// 10</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">triple</span>(<span class="number">5</span>));  <span class="comment">// 15</span></code></pre>
+        </div>
+    </div>
+
+    <div class="tip">
+        <strong>Совет:</strong> Замыкания и каррирование - мощные техники для создания переиспользуемого и модульного кода. Они активно используются в функциональном программировании и библиотеках типа Lodash и Ramda.
+    </div>
+</div>
+

@@ -1,0 +1,205 @@
+<div class="container">
+    <a href="#" class="back-button">← Назад к списку тем</a>
+    
+    <div class="page-header">
+        <h1>⚠️ Обработка ошибок</h1>
+        <p>Try/catch, типы ошибок, кастомные ошибки и best practices для обработки ошибок в JavaScript</p>
+    </div>
+
+    <div class="content-section">
+        <h2>Try/Catch/Finally</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 1: Базовый try/catch</span>
+            <pre><code><span class="keyword">try</span> {
+    <span class="comment">// Код, который может вызвать ошибку</span>
+    <span class="keyword">const</span> <span class="variable">result</span> = <span class="variable">riskyOperation</span>();
+    <span class="function">console</span>.<span class="function">log</span>(<span class="variable">result</span>);
+} <span class="keyword">catch</span> (<span class="variable">error</span>) {
+    <span class="comment">// Обработка ошибки</span>
+    <span class="function">console</span>.<span class="function">error</span>(<span class="string">"Произошла ошибка:"</span>, <span class="variable">error</span>.<span class="variable">message</span>);
+    <span class="function">console</span>.<span class="function">error</span>(<span class="string">"Стек:"</span>, <span class="variable">error</span>.<span class="variable">stack</span>);
+} <span class="keyword">finally</span> {
+    <span class="comment">// Выполняется всегда</span>
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Операция завершена"</span>);
+}</code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 2: Вложенные try/catch</span>
+            <pre><code><span class="keyword">try</span> {
+    <span class="keyword">try</span> {
+        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="function">Error</span>(<span class="string">"Внутренняя ошибка"</span>);
+    } <span class="keyword">catch</span> (<span class="variable">innerError</span>) {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Обработана внутренняя ошибка"</span>);
+        <span class="keyword">throw</span> <span class="variable">innerError</span>;  <span class="comment">// Пробрасываем дальше</span>
+    }
+} <span class="keyword">catch</span> (<span class="variable">outerError</span>) {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Обработана внешняя ошибка"</span>);
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Типы ошибок</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 3: Стандартные типы ошибок</span>
+            <pre><code><span class="comment">// Error - базовый тип</span>
+<span class="keyword">throw</span> <span class="keyword">new</span> <span class="function">Error</span>(<span class="string">"Общая ошибка"</span>);
+
+<span class="comment">// TypeError - неправильный тип</span>
+<span class="keyword">const</span> <span class="variable">obj</span> = <span class="keyword">null</span>;
+<span class="variable">obj</span>.<span class="variable">property</span>;  <span class="comment">// TypeError: Cannot read property</span>
+
+<span class="comment">// ReferenceError - несуществующая переменная</span>
+<span class="variable">undefinedVariable</span>;  <span class="comment">// ReferenceError</span>
+
+<span class="comment">// SyntaxError - синтаксическая ошибка</span>
+<span class="comment">// eval("const x =");  // SyntaxError</span>
+
+<span class="comment">// RangeError - выход за границы</span>
+<span class="keyword">const</span> <span class="variable">arr</span> = <span class="keyword">new</span> <span class="function">Array</span>(-<span class="number">1</span>);  <span class="comment">// RangeError</span>
+
+<span class="comment">// Обработка конкретного типа</span>
+<span class="keyword">try</span> {
+    <span class="variable">riskyCode</span>();
+} <span class="keyword">catch</span> (<span class="variable">error</span>) {
+    <span class="keyword">if</span> (<span class="variable">error</span> <span class="keyword">instanceof</span> <span class="function">TypeError</span>) {
+        <span class="function">console</span>.<span class="function">error</span>(<span class="string">"Ошибка типа:"</span>, <span class="variable">error</span>);
+    } <span class="keyword">else if</span> (<span class="variable">error</span> <span class="keyword">instanceof</span> <span class="function">ReferenceError</span>) {
+        <span class="function">console</span>.<span class="function">error</span>(<span class="string">"Ошибка ссылки:"</span>, <span class="variable">error</span>);
+    } <span class="keyword">else</span> {
+        <span class="function">console</span>.<span class="function">error</span>(<span class="string">"Неизвестная ошибка:"</span>, <span class="variable">error</span>);
+    }
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Кастомные ошибки</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 4: Создание кастомных классов ошибок</span>
+            <pre><code><span class="comment">// Базовый класс кастомной ошибки</span>
+<span class="keyword">class</span> <span class="class-name">CustomError</span> <span class="keyword">extends</span> <span class="class-name">Error</span> {
+    <span class="function">constructor</span>(<span class="variable">message</span>, <span class="variable">code</span> = <span class="string">"CUSTOM_ERROR"</span>) {
+        <span class="keyword">super</span>(<span class="variable">message</span>);
+        <span class="keyword">this</span>.<span class="variable">name</span> = <span class="keyword">this</span>.<span class="function">constructor</span>.<span class="variable">name</span>;
+        <span class="keyword">this</span>.<span class="variable">code</span> = <span class="variable">code</span>;
+        <span class="function">Error</span>.<span class="function">captureStackTrace</span>(<span class="keyword">this</span>, <span class="keyword">this</span>.<span class="function">constructor</span>);
+    }
+}
+
+<span class="comment">// Специализированные ошибки</span>
+<span class="keyword">class</span> <span class="class-name">ValidationError</span> <span class="keyword">extends</span> <span class="class-name">CustomError</span> {
+    <span class="function">constructor</span>(<span class="variable">message</span>, <span class="variable">field</span>) {
+        <span class="keyword">super</span>(<span class="variable">message</span>, <span class="string">"VALIDATION_ERROR"</span>);
+        <span class="keyword">this</span>.<span class="variable">field</span> = <span class="variable">field</span>;
+    }
+}
+
+<span class="keyword">class</span> <span class="class-name">NetworkError</span> <span class="keyword">extends</span> <span class="class-name">CustomError</span> {
+    <span class="function">constructor</span>(<span class="variable">message</span>, <span class="variable">statusCode</span>) {
+        <span class="keyword">super</span>(<span class="variable">message</span>, <span class="string">"NETWORK_ERROR"</span>);
+        <span class="keyword">this</span>.<span class="variable">statusCode</span> = <span class="variable">statusCode</span>;
+    }
+}
+
+<span class="comment">// Использование</span>
+<span class="function">function</span> <span class="function">validateUser</span>(<span class="variable">user</span>) {
+    <span class="keyword">if</span> (!<span class="variable">user</span>.<span class="variable">email</span>) {
+        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="function">ValidationError</span>(<span class="string">"Email обязателен"</span>, <span class="string">"email"</span>);
+    }
+}
+
+<span class="keyword">try</span> {
+    <span class="function">validateUser</span>({ <span class="variable">name</span>: <span class="string">"Иван"</span> });
+} <span class="keyword">catch</span> (<span class="variable">error</span>) {
+    <span class="keyword">if</span> (<span class="variable">error</span> <span class="keyword">instanceof</span> <span class="function">ValidationError</span>) {
+        <span class="function">console</span>.<span class="function">error</span>(<span class="string">`Ошибка валидации поля ${error.field}: ${error.message}`</span>);
+    }
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Обработка ошибок в асинхронном коде</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 5: Ошибки в Promises</span>
+            <pre><code><span class="comment">// В Promise</span>
+<span class="keyword">new</span> <span class="function">Promise</span>((<span class="variable">resolve</span>, <span class="variable">reject</span>) =&gt; {
+    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="function">Error</span>(<span class="string">"Ошибка"</span>);
+})
+    .<span class="function">then</span>(<span class="variable">result</span> =&gt; <span class="function">console</span>.<span class="function">log</span>(<span class="variable">result</span>))
+    .<span class="function">catch</span>(<span class="variable">error</span> =&gt; <span class="function">console</span>.<span class="function">error</span>(<span class="variable">error</span>));
+
+<span class="comment">// В async/await</span>
+<span class="keyword">async</span> <span class="function">function</span> <span class="function">asyncFunction</span>() {
+    <span class="keyword">try</span> {
+        <span class="keyword">const</span> <span class="variable">result</span> = <span class="keyword">await</span> <span class="function">riskyAsyncOperation</span>();
+        <span class="keyword">return</span> <span class="variable">result</span>;
+    } <span class="keyword">catch</span> (<span class="variable">error</span>) {
+        <span class="function">console</span>.<span class="function">error</span>(<span class="string">"Ошибка в async функции:"</span>, <span class="variable">error</span>);
+        <span class="keyword">throw</span> <span class="variable">error</span>;  <span class="comment">// Пробрасываем дальше</span>
+    }
+}
+
+<span class="comment">// Необработанные ошибки в async</span>
+<span class="keyword">async</span> <span class="function">function</span> <span class="function">unhandled</span>() {
+    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="function">Error</span>(<span class="string">"Ошибка"</span>);
+}
+
+<span class="function">unhandled</span>().<span class="function">catch</span>(<span class="variable">error</span> =&gt; {
+    <span class="function">console</span>.<span class="function">error</span>(<span class="variable">error</span>);
+});</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Best Practices</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 6: Рекомендации</span>
+            <pre><code><span class="comment">// 1. Всегда логируйте ошибки</span>
+<span class="keyword">try</span> {
+    <span class="variable">riskyCode</span>();
+} <span class="keyword">catch</span> (<span class="variable">error</span>) {
+    <span class="function">console</span>.<span class="function">error</span>(<span class="string">"Ошибка:"</span>, {
+        <span class="variable">message</span>: <span class="variable">error</span>.<span class="variable">message</span>,
+        <span class="variable">stack</span>: <span class="variable">error</span>.<span class="variable">stack</span>,
+        <span class="variable">timestamp</span>: <span class="keyword">new</span> <span class="function">Date</span>().<span class="function">toISOString</span>()
+    });
+    <span class="keyword">throw</span> <span class="variable">error</span>;  <span class="comment">// Пробрасываем дальше</span>
+}
+
+<span class="comment">// 2. Не скрывайте ошибки</span>
+<span class="comment">// Плохо:</span>
+<span class="keyword">try</span> {
+    <span class="variable">riskyCode</span>();
+} <span class="keyword">catch</span> (<span class="variable">error</span>) {
+    <span class="comment">// Молча игнорируем - плохо!</span>
+}
+
+<span class="comment">// Хорошо:</span>
+<span class="keyword">try</span> {
+    <span class="variable">riskyCode</span>();
+} <span class="keyword">catch</span> (<span class="variable">error</span>) {
+    <span class="function">logError</span>(<span class="variable">error</span>);
+    <span class="function">showUserMessage</span>(<span class="string">"Произошла ошибка. Попробуйте позже."</span>);
+}
+
+<span class="comment">// 3. Глобальная обработка ошибок</span>
+<span class="function">window</span>.<span class="function">addEventListener</span>(<span class="string">"error"</span>, <span class="function">function</span>(<span class="variable">event</span>) {
+    <span class="function">console</span>.<span class="function">error</span>(<span class="string">"Глобальная ошибка:"</span>, <span class="variable">event</span>.<span class="variable">error</span>);
+});
+
+<span class="function">window</span>.<span class="function">addEventListener</span>(<span class="string">"unhandledrejection"</span>, <span class="function">function</span>(<span class="variable">event</span>) {
+    <span class="function">console</span>.<span class="function">error</span>(<span class="string">"Необработанный Promise rejection:"</span>, <span class="variable">event</span>.<span class="variable">reason</span>);
+    <span class="variable">event</span>.<span class="function">preventDefault</span>();  <span class="comment">// Предотвратить вывод в консоль</span>
+});</code></pre>
+        </div>
+    </div>
+</div>
+

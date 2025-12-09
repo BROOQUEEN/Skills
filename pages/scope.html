@@ -1,0 +1,146 @@
+<div class="container">
+    <a href="#" class="back-button">← Назад к списку тем</a>
+    
+    <div class="page-header">
+        <h1>🔍 Область видимости и this</h1>
+        <p>Lexical scope, hoisting, контекст выполнения, bind/call/apply - критически важные концепции JavaScript</p>
+    </div>
+
+    <div class="content-section">
+        <h2>Область видимости (Scope)</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 1: Типы области видимости</span>
+            <pre><code><span class="comment">// Глобальная область видимости</span>
+<span class="keyword">const</span> <span class="variable">globalVar</span> = <span class="string">"Глобальная переменная"</span>;
+
+<span class="function">function</span> <span class="function">outer</span>() {
+    <span class="comment">// Функциональная область видимости</span>
+    <span class="keyword">const</span> <span class="variable">outerVar</span> = <span class="string">"Переменная outer"</span>;
+    
+    <span class="function">function</span> <span class="function">inner</span>() {
+        <span class="comment">// Функциональная область видимости</span>
+        <span class="keyword">const</span> <span class="variable">innerVar</span> = <span class="string">"Переменная inner"</span>;
+        <span class="function">console</span>.<span class="function">log</span>(<span class="variable">globalVar</span>);  <span class="comment">// Доступна</span>
+        <span class="function">console</span>.<span class="function">log</span>(<span class="variable">outerVar</span>);   <span class="comment">// Доступна</span>
+        <span class="function">console</span>.<span class="function">log</span>(<span class="variable">innerVar</span>);   <span class="comment">// Доступна</span>
+    }
+    
+    <span class="function">inner</span>();
+    <span class="function">console</span>.<span class="function">log</span>(<span class="variable">outerVar</span>);  <span class="comment">// Доступна</span>
+    <span class="comment">// console.log(innerVar);  // Ошибка! Недоступна</span>
+}
+
+<span class="comment">// Блочная область видимости (let, const)</span>
+<span class="keyword">if</span> (<span class="keyword">true</span>) {
+    <span class="keyword">let</span> <span class="variable">blockVar</span> = <span class="string">"Блочная переменная"</span>;
+    <span class="keyword">const</span> <span class="variable">blockConst</span> = <span class="string">"Блочная константа"</span>;
+}
+<span class="comment">// console.log(blockVar);  // Ошибка! Недоступна вне блока</span>
+
+<span class="comment">// var имеет функциональную область видимости (не блочную!)</span>
+<span class="keyword">if</span> (<span class="keyword">true</span>) {
+    <span class="keyword">var</span> <span class="variable">functionScoped</span> = <span class="string">"Доступна вне блока"</span>;
+}
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">functionScoped</span>);  <span class="comment">// Работает!</span></code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Hoisting (Поднятие)</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 2: Hoisting</span>
+            <pre><code><span class="comment">// Function Declaration - поднимается полностью</span>
+<span class="function">sayHello</span>();  <span class="comment">// Работает!</span>
+
+<span class="function">function</span> <span class="function">sayHello</span>() {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Привет"</span>);
+}
+
+<span class="comment">// var - поднимается объявление (undefined)</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">x</span>);  <span class="comment">// undefined (не ошибка!)</span>
+<span class="keyword">var</span> <span class="variable">x</span> = <span class="number">5</span>;
+
+<span class="comment">// let/const - поднимаются, но в TDZ (Temporal Dead Zone)</span>
+<span class="comment">// console.log(y);  // Ошибка! Cannot access before initialization</span>
+<span class="keyword">let</span> <span class="variable">y</span> = <span class="number">10</span>;
+
+<span class="comment">// Function Expression - не поднимается</span>
+<span class="comment">// sayGoodbye();  // Ошибка!</span>
+<span class="keyword">const</span> <span class="variable">sayGoodbye</span> = <span class="function">function</span>() {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Пока"</span>);
+};</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Контекст this</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 3: Правила работы this</span>
+            <pre><code><span class="comment">// 1. В обычной функции this зависит от способа вызова</span>
+<span class="function">function</span> <span class="function">regularFunction</span>() {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="keyword">this</span>);  <span class="comment">// window (в браузере) или undefined (в strict mode)</span>
+}
+
+<span class="comment">// 2. В методе объекта this = объект</span>
+<span class="keyword">const</span> <span class="variable">obj</span> = {
+    <span class="variable">name</span>: <span class="string">"Иван"</span>,
+    <span class="function">greet</span>() {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">`Привет, я ${this.name}`</span>);  <span class="comment">// this = obj</span>
+    }
+};
+<span class="variable">obj</span>.<span class="function">greet</span>();  <span class="comment">// "Привет, я Иван"</span>
+
+<span class="comment">// 3. В стрелочной функции this из внешней области</span>
+<span class="keyword">const</span> <span class="variable">arrowObj</span> = {
+    <span class="variable">name</span>: <span class="string">"Петр"</span>,
+    <span class="function">greet</span>: () =&gt; {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">`Привет, я ${this.name}`</span>);  <span class="comment">// this = window</span>
+    }
+};
+
+<span class="comment">// 4. В конструкторе this = новый объект</span>
+<span class="function">function</span> <span class="function">Person</span>(<span class="variable">name</span>) {
+    <span class="keyword">this</span>.<span class="variable">name</span> = <span class="variable">name</span>;
+}
+<span class="keyword">const</span> <span class="variable">person</span> = <span class="keyword">new</span> <span class="function">Person</span>(<span class="string">"Мария"</span>);</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>bind, call, apply</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 4: Управление контекстом</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">person</span> = {
+    <span class="variable">name</span>: <span class="string">"Иван"</span>,
+    <span class="function">greet</span>(<span class="variable">greeting</span>, <span class="variable">punctuation</span>) {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">`${greeting}, я ${this.name}${punctuation}`</span>);
+    }
+};
+
+<span class="keyword">const</span> <span class="variable">otherPerson</span> = { <span class="variable">name</span>: <span class="string">"Петр"</span> };
+
+<span class="comment">// call - вызывает функцию с указанным this и аргументами</span>
+<span class="variable">person</span>.<span class="function">greet</span>.<span class="function">call</span>(<span class="variable">otherPerson</span>, <span class="string">"Привет"</span>, <span class="string">"!"</span>);  <span class="comment">// "Привет, я Петр!"</span>
+
+<span class="comment">// apply - то же, но аргументы в массиве</span>
+<span class="variable">person</span>.<span class="function">greet</span>.<span class="function">apply</span>(<span class="variable">otherPerson</span>, [<span class="string">"Здравствуй"</span>, <span class="string">"."</span>]);  <span class="comment">// "Здравствуй, я Петр."</span>
+
+<span class="comment">// bind - создает новую функцию с привязанным this</span>
+<span class="keyword">const</span> <span class="variable">boundGreet</span> = <span class="variable">person</span>.<span class="function">greet</span>.<span class="function">bind</span>(<span class="variable">otherPerson</span>);
+<span class="variable">boundGreet</span>(<span class="string">"Привет"</span>, <span class="string">"!"</span>);  <span class="comment">// "Привет, я Петр!"</span>
+
+<span class="comment">// Частичное применение аргументов</span>
+<span class="keyword">const</span> <span class="variable">greetWithHello</span> = <span class="variable">person</span>.<span class="function">greet</span>.<span class="function">bind</span>(<span class="variable">otherPerson</span>, <span class="string">"Привет"</span>);
+<span class="variable">greetWithHello</span>(<span class="string">"!"</span>);  <span class="comment">// "Привет, я Петр!"</span>
+
+<span class="comment">// Применение в обработчиках событий</span>
+<span class="keyword">const</span> <span class="variable">button</span> = <span class="function">document</span>.<span class="function">querySelector</span>(<span class="string">"button"</span>);
+<span class="variable">button</span>.<span class="function">addEventListener</span>(<span class="string">"click"</span>, <span class="variable">person</span>.<span class="function">greet</span>.<span class="function">bind</span>(<span class="variable">person</span>, <span class="string">"Привет"</span>, <span class="string">"!"</span>));</code></pre>
+        </div>
+    </div>
+</div>
+

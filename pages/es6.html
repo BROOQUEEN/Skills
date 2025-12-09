@@ -1,0 +1,310 @@
+<div class="container">
+    <a href="#" class="back-button">← Назад к списку тем</a>
+    
+    <div class="page-header">
+        <h1>✨ ES6+ Синтаксис</h1>
+        <p>Современные возможности JavaScript: деструктуризация, spread/rest операторы, шаблонные строки, модули и многое другое</p>
+    </div>
+
+    <div class="content-section">
+        <h2>Деструктуризация (Destructuring)</h2>
+        <p>Способ извлечения данных из массивов и объектов в отдельные переменные.</p>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 1: Деструктуризация массивов</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">colors</span> = [<span class="string">"красный"</span>, <span class="string">"зеленый"</span>, <span class="string">"синий"</span>];
+
+<span class="comment">// Старый способ</span>
+<span class="keyword">const</span> <span class="variable">first</span> = <span class="variable">colors</span>[<span class="number">0</span>];
+<span class="keyword">const</span> <span class="variable">second</span> = <span class="variable">colors</span>[<span class="number">1</span>];
+
+<span class="comment">// Новый способ (ES6)</span>
+<span class="keyword">const</span> [<span class="variable">first</span>, <span class="variable">second</span>, <span class="variable">third</span>] = <span class="variable">colors</span>;
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">first</span>);   <span class="comment">// "красный"</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">third</span>);   <span class="comment">// "синий"</span>
+
+<span class="comment">// Пропуск элементов</span>
+<span class="keyword">const</span> [<span class="variable">red</span>,, <span class="variable">blue</span>] = <span class="variable">colors</span>;  <span class="comment">// Пропустили "зеленый"</span>
+
+<span class="comment">// Значения по умолчанию</span>
+<span class="keyword">const</span> [<span class="variable">a</span>, <span class="variable">b</span>, <span class="variable">c</span> = <span class="string">"желтый"</span>] = [<span class="string">"красный"</span>, <span class="string">"зеленый"</span>];
+
+<span class="comment">// Остальные элементы</span>
+<span class="keyword">const</span> [<span class="variable">first</span>, ...<span class="variable">rest</span>] = <span class="variable">colors</span>;
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">rest</span>);  <span class="comment">// ["зеленый", "синий"]</span>
+
+<span class="comment">// Обмен переменных</span>
+<span class="keyword">let</span> <span class="variable">x</span> = <span class="number">1</span>;
+<span class="keyword">let</span> <span class="variable">y</span> = <span class="number">2</span>;
+[<span class="variable">x</span>, <span class="variable">y</span>] = [<span class="variable">y</span>, <span class="variable">x</span>];  <span class="comment">// Обмен без временной переменной!</span></code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 2: Деструктуризация объектов</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">user</span> = {
+    <span class="variable">name</span>: <span class="string">"Иван"</span>,
+    <span class="variable">age</span>: <span class="number">30</span>,
+    <span class="variable">city</span>: <span class="string">"Москва"</span>,
+    <span class="variable">email</span>: <span class="string">"ivan@example.com"</span>
+};
+
+<span class="comment">// Базовая деструктуризация</span>
+<span class="keyword">const</span> { <span class="variable">name</span>, <span class="variable">age</span> } = <span class="variable">user</span>;
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">name</span>);  <span class="comment">// "Иван"</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">age</span>);   <span class="comment">// 30</span>
+
+<span class="comment">// Переименование переменных</span>
+<span class="keyword">const</span> { <span class="variable">name</span>: <span class="variable">userName</span>, <span class="variable">age</span>: <span class="variable">userAge</span> } = <span class="variable">user</span>;
+
+<span class="comment">// Значения по умолчанию</span>
+<span class="keyword">const</span> { <span class="variable">name</span>, <span class="variable">age</span>, <span class="variable">country</span> = <span class="string">"Россия"</span> } = <span class="variable">user</span>;
+
+<span class="comment">// Вложенная деструктуризация</span>
+<span class="keyword">const</span> <span class="variable">person</span> = {
+    <span class="variable">name</span>: <span class="string">"Иван"</span>,
+    <span class="variable">address</span>: {
+        <span class="variable">city</span>: <span class="string">"Москва"</span>,
+        <span class="variable">street</span>: <span class="string">"Ленина"</span>
+    }
+};
+<span class="keyword">const</span> { <span class="variable">address</span>: { <span class="variable">city</span>, <span class="variable">street</span> } } = <span class="variable">person</span>;
+
+<span class="comment">// Деструктуризация в параметрах функции</span>
+<span class="function">function</span> <span class="function">greet</span>({ <span class="variable">name</span>, <span class="variable">age</span> }) {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">`Привет, ${name}! Тебе ${age} лет.`</span>);
+}
+<span class="function">greet</span>(<span class="variable">user</span>);  <span class="comment">// "Привет, Иван! Тебе 30 лет."</span>
+
+<span class="comment">// Остальные свойства</span>
+<span class="keyword">const</span> { <span class="variable">name</span>, ...<span class="variable">rest</span> } = <span class="variable">user</span>;
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">rest</span>);  <span class="comment">// { age: 30, city: "Москва", email: "ivan@example.com" }</span></code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Spread и Rest операторы</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 3: Spread оператор</span>
+            <pre><code><span class="comment">// Распаковка массивов</span>
+<span class="keyword">const</span> <span class="variable">arr1</span> = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];
+<span class="keyword">const</span> <span class="variable">arr2</span> = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>];
+<span class="keyword">const</span> <span class="variable">combined</span> = [...<span class="variable">arr1</span>, ...<span class="variable">arr2</span>];  <span class="comment">// [1, 2, 3, 4, 5, 6]</span>
+
+<span class="comment">// Копирование массива</span>
+<span class="keyword">const</span> <span class="variable">copy</span> = [...<span class="variable">arr1</span>];  <span class="comment">// Новый массив, не ссылка!</span>
+
+<span class="comment">// Добавление элементов</span>
+<span class="keyword">const</span> <span class="variable">newArr</span> = [<span class="number">0</span>, ...<span class="variable">arr1</span>, <span class="number">4</span>];  <span class="comment">// [0, 1, 2, 3, 4]</span>
+
+<span class="comment">// Распаковка объектов</span>
+<span class="keyword">const</span> <span class="variable">obj1</span> = { <span class="variable">a</span>: <span class="number">1</span>, <span class="variable">b</span>: <span class="number">2</span> };
+<span class="keyword">const</span> <span class="variable">obj2</span> = { <span class="variable">c</span>: <span class="number">3</span>, <span class="variable">d</span>: <span class="number">4</span> };
+<span class="keyword">const</span> <span class="variable">merged</span> = { ...<span class="variable">obj1</span>, ...<span class="variable">obj2</span> };  <span class="comment">// { a: 1, b: 2, c: 3, d: 4 }</span>
+
+<span class="comment">// Переопределение свойств</span>
+<span class="keyword">const</span> <span class="variable">updated</span> = { ...<span class="variable">obj1</span>, <span class="variable">b</span>: <span class="number">99</span> };  <span class="comment">// { a: 1, b: 99 }</span>
+
+<span class="comment">// Копирование объекта</span>
+<span class="keyword">const</span> <span class="variable">objCopy</span> = { ...<span class="variable">obj1</span> };  <span class="comment">// Поверхностная копия</span>
+
+<span class="comment">// В функциях - передача аргументов</span>
+<span class="function">function</span> <span class="function">sum</span>(<span class="variable">a</span>, <span class="variable">b</span>, <span class="variable">c</span>) {
+    <span class="keyword">return</span> <span class="variable">a</span> + <span class="variable">b</span> + <span class="variable">c</span>;
+}
+<span class="keyword">const</span> <span class="variable">numbers</span> = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];
+<span class="function">sum</span>(...<span class="variable">numbers</span>);  <span class="comment">// 6</span>
+
+<span class="comment">// Преобразование строки в массив</span>
+<span class="keyword">const</span> <span class="variable">chars</span> = [...<span class="string">"hello"</span>];  <span class="comment">// ["h", "e", "l", "l", "o"]</span></code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 4: Rest параметр</span>
+            <pre><code><span class="comment">// Сбор оставшихся аргументов в массив</span>
+<span class="function">function</span> <span class="function">sum</span>(<span class="variable">first</span>, <span class="variable">second</span>, ...<span class="variable">rest</span>) {
+    <span class="keyword">return</span> <span class="variable">first</span> + <span class="variable">second</span> + <span class="variable">rest</span>.<span class="function">reduce</span>((<span class="variable">a</span>, <span class="variable">b</span>) =&gt; <span class="variable">a</span> + <span class="variable">b</span>, <span class="number">0</span>);
+}
+
+<span class="function">sum</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>);  <span class="comment">// 15</span>
+
+<span class="comment">// Rest в деструктуризации</span>
+<span class="keyword">const</span> [<span class="variable">first</span>, <span class="variable">second</span>, ...<span class="variable">others</span>] = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];
+<span class="comment">// first = 1, second = 2, others = [3, 4, 5]</span>
+
+<span class="keyword">const</span> { <span class="variable">name</span>, ...<span class="variable">rest</span> } = { <span class="variable">name</span>: <span class="string">"Иван"</span>, <span class="variable">age</span>: <span class="number">30</span>, <span class="variable">city</span>: <span class="string">"Москва"</span> };
+<span class="comment">// name = "Иван", rest = { age: 30, city: "Москва" }</span></code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Шаблонные строки (Template Literals)</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 5: Шаблонные строки</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">name</span> = <span class="string">"Иван"</span>;
+<span class="keyword">const</span> <span class="variable">age</span> = <span class="number">30</span>;
+
+<span class="comment">// Старый способ</span>
+<span class="keyword">const</span> <span class="variable">message1</span> = <span class="string">"Привет, "</span> + <span class="variable">name</span> + <span class="string">"! Тебе "</span> + <span class="variable">age</span> + <span class="string">" лет."</span>;
+
+<span class="comment">// Новый способ (ES6)</span>
+<span class="keyword">const</span> <span class="variable">message2</span> = <span class="string">`Привет, ${name}! Тебе ${age} лет.`</span>;
+
+<span class="comment">// Многострочные строки</span>
+<span class="keyword">const</span> <span class="variable">multiLine</span> = <span class="string">`
+    Строка 1
+    Строка 2
+    Строка 3
+`</span>;
+
+<span class="comment">// Выражения в шаблонах</span>
+<span class="keyword">const</span> <span class="variable">a</span> = <span class="number">10</span>;
+<span class="keyword">const</span> <span class="variable">b</span> = <span class="number">5</span>;
+<span class="keyword">const</span> <span class="variable">result</span> = <span class="string">`${a} + ${b} = ${a + b}`</span>;  <span class="comment">// "10 + 5 = 15"</span>
+
+<span class="comment">// Вложенные шаблоны</span>
+<span class="keyword">const</span> <span class="variable">isAdmin</span> = <span class="keyword">true</span>;
+<span class="keyword">const</span> <span class="variable">status</span> = <span class="string">`Пользователь ${name} ${isAdmin ? <span class="string">"является"</span> : <span class="string">"не является"</span>} администратором`</span>;</code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 6: Тегированные шаблоны</span>
+            <pre><code><span class="comment">// Функция для обработки шаблона</span>
+<span class="function">function</span> <span class="function">highlight</span>(<span class="variable">strings</span>, ...<span class="variable">values</span>) {
+    <span class="keyword">return</span> <span class="variable">strings</span>.<span class="function">reduce</span>((<span class="variable">result</span>, <span class="variable">str</span>, <span class="variable">i</span>) =&gt; {
+        <span class="keyword">const</span> <span class="variable">value</span> = <span class="variable">values</span>[<span class="variable">i</span>] ? <span class="string">`&lt;mark&gt;${values[i]}&lt;/mark&gt;`</span> : <span class="string">""</span>;
+        <span class="keyword">return</span> <span class="variable">result</span> + <span class="variable">str</span> + <span class="variable">value</span>;
+    }, <span class="string">""</span>);
+}
+
+<span class="keyword">const</span> <span class="variable">name</span> = <span class="string">"Иван"</span>;
+<span class="keyword">const</span> <span class="variable">age</span> = <span class="number">30</span>;
+<span class="keyword">const</span> <span class="variable">message</span> = <span class="function">highlight</span><span class="string">`Привет, ${name}! Тебе ${age} лет.`</span>;
+<span class="comment">// "Привет, &lt;mark&gt;Иван&lt;/mark&gt;! Тебе &lt;mark&gt;30&lt;/mark&gt; лет."</span>
+
+<span class="comment">// Реальный пример: SQL запросы</span>
+<span class="function">function</span> <span class="function">sql</span>(<span class="variable">strings</span>, ...<span class="variable">values</span>) {
+    <span class="comment">// Экранирование и валидация значений</span>
+    <span class="keyword">return</span> <span class="variable">strings</span>.<span class="function">reduce</span>((<span class="variable">query</span>, <span class="variable">str</span>, <span class="variable">i</span>) =&gt; {
+        <span class="keyword">const</span> <span class="variable">value</span> = <span class="variable">values</span>[<span class="variable">i</span>] || <span class="string">""</span>;
+        <span class="keyword">return</span> <span class="variable">query</span> + <span class="variable">str</span> + <span class="function">escape</span>(<span class="variable">value</span>);
+    }, <span class="string">""</span>);
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>ES6 Модули</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 7: Экспорт и импорт</span>
+            <pre><code><span class="comment">// math.js - именованный экспорт</span>
+<span class="keyword">export</span> <span class="function">function</span> <span class="function">add</span>(<span class="variable">a</span>, <span class="variable">b</span>) {
+    <span class="keyword">return</span> <span class="variable">a</span> + <span class="variable">b</span>;
+}
+
+<span class="keyword">export</span> <span class="function">function</span> <span class="function">multiply</span>(<span class="variable">a</span>, <span class="variable">b</span>) {
+    <span class="keyword">return</span> <span class="variable">a</span> * <span class="variable">b</span>;
+}
+
+<span class="keyword">export</span> <span class="keyword">const</span> <span class="variable">PI</span> = <span class="number">3.14159</span>;
+
+<span class="comment">// Или один раз в конце</span>
+<span class="keyword">export</span> { <span class="variable">add</span>, <span class="variable">multiply</span>, <span class="variable">PI</span> };
+
+<span class="comment">// Экспорт по умолчанию</span>
+<span class="keyword">export</span> <span class="keyword">default</span> <span class="function">function</span> <span class="function">subtract</span>(<span class="variable">a</span>, <span class="variable">b</span>) {
+    <span class="keyword">return</span> <span class="variable">a</span> - <span class="variable">b</span>;
+}
+
+<span class="comment">// main.js - импорт</span>
+<span class="comment">// Именованный импорт</span>
+<span class="keyword">import</span> { <span class="variable">add</span>, <span class="variable">multiply</span>, <span class="variable">PI</span> } <span class="keyword">from</span> <span class="string">"./math.js"</span>;
+
+<span class="comment">// Импорт по умолчанию</span>
+<span class="keyword">import</span> <span class="variable">subtract</span> <span class="keyword">from</span> <span class="string">"./math.js"</span>;
+
+<span class="comment">// Импорт всего модуля</span>
+<span class="keyword">import</span> * <span class="keyword">as</span> <span class="variable">math</span> <span class="keyword">from</span> <span class="string">"./math.js"</span>;
+<span class="variable">math</span>.<span class="function">add</span>(<span class="number">2</span>, <span class="number">3</span>);
+
+<span class="comment">// Переименование при импорте</span>
+<span class="keyword">import</span> { <span class="variable">add</span> <span class="keyword">as</span> <span class="variable">sum</span> } <span class="keyword">from</span> <span class="string">"./math.js"</span>;</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Другие ES6+ возможности</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 8: Опциональная цепочка (Optional Chaining) ES2020</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">user</span> = {
+    <span class="variable">name</span>: <span class="string">"Иван"</span>,
+    <span class="variable">address</span>: {
+        <span class="variable">city</span>: <span class="string">"Москва"</span>
+    }
+};
+
+<span class="comment">// Старый способ (проверка на undefined/null)</span>
+<span class="keyword">const</span> <span class="variable">city1</span> = <span class="variable">user</span> && <span class="variable">user</span>.<span class="variable">address</span> && <span class="variable">user</span>.<span class="variable">address</span>.<span class="variable">city</span>;
+
+<span class="comment">// Новый способ (ES2020)</span>
+<span class="keyword">const</span> <span class="variable">city2</span> = <span class="variable">user</span>?.<span class="variable">address</span>?.<span class="variable">city</span>;  <span class="comment">// "Москва"</span>
+<span class="keyword">const</span> <span class="variable">street</span> = <span class="variable">user</span>?.<span class="variable">address</span>?.<span class="variable">street</span>;  <span class="comment">// undefined (без ошибки!)</span>
+
+<span class="comment">// С методами</span>
+<span class="variable">user</span>?.<span class="function">getName</span>?.();  <span class="comment">// Вызов только если метод существует</span>
+
+<span class="comment">// С массивами</span>
+<span class="keyword">const</span> <span class="variable">first</span> = <span class="variable">arr</span>?.[<span class="number">0</span>];</code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 9: Nullish Coalescing (ES2020)</span>
+            <pre><code><span class="comment">// Старый способ</span>
+<span class="keyword">const</span> <span class="variable">value1</span> = <span class="variable">user</span>.<span class="variable">name</span> || <span class="string">"Гость"</span>;  <span class="comment">// Проблема: если name = "", то тоже "Гость"</span>
+
+<span class="comment">// Новый способ - проверяет только null и undefined</span>
+<span class="keyword">const</span> <span class="variable">value2</span> = <span class="variable">user</span>.<span class="variable">name</span> ?? <span class="string">"Гость"</span>;  <span class="comment">// "" вернет "", а не "Гость"</span>
+
+<span class="keyword">const</span> <span class="variable">count</span> = <span class="variable">user</span>.<span class="variable">count</span> ?? <span class="number">0</span>;  <span class="comment">// Если count === 0, вернет 0 (не дефолт!)</span>
+
+<span class="comment">// Комбинация с optional chaining</span>
+<span class="keyword">const</span> <span class="variable">city</span> = <span class="variable">user</span>?.<span class="variable">address</span>?.<span class="variable">city</span> ?? <span class="string">"Неизвестно"</span>;</code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 10: Методы объекта</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">name</span> = <span class="string">"Иван"</span>;
+<span class="keyword">const</span> <span class="variable">age</span> = <span class="number">30</span>;
+
+<span class="comment">// Сокращенная запись свойств</span>
+<span class="keyword">const</span> <span class="variable">user</span> = { <span class="variable">name</span>, <span class="variable">age</span> };  <span class="comment">// { name: "Иван", age: 30 }</span>
+
+<span class="comment">// Сокращенная запись методов</span>
+<span class="keyword">const</span> <span class="variable">obj</span> = {
+    <span class="variable">name</span>: <span class="string">"Иван"</span>,
+    <span class="function">greet</span>() {  <span class="comment">// Вместо greet: function() {}</span>
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">`Привет, ${this.name}!`</span>);
+    },
+    <span class="comment">// Стрелочная функция (не имеет this)</span>
+    <span class="function">greetArrow</span>: () =&gt; {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Привет!"</span>);
+    }
+};
+
+<span class="comment">// Вычисляемые свойства</span>
+<span class="keyword">const</span> <span class="variable">key</span> = <span class="string">"name"</span>;
+<span class="keyword">const</span> <span class="variable">obj2</span> = {
+    [<span class="variable">key</span>]: <span class="string">"Иван"</span>,  <span class="comment">// { name: "Иван" }</span>
+    [`${key}UpperCase`]: <span class="string">"ИВАН"</span>  <span class="comment">// { nameUpperCase: "ИВАН" }</span>
+};</code></pre>
+        </div>
+    </div>
+
+    <div class="tip">
+        <strong>Совет:</strong> Используйте деструктуризацию для более чистого кода. Spread оператор удобен для копирования и объединения объектов/массивов. Шаблонные строки делают код более читаемым.
+    </div>
+</div>
+

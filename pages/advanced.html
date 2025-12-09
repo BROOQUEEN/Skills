@@ -1,0 +1,121 @@
+<div class="container">
+    <a href="#" class="back-button">← Назад к списку тем</a>
+    
+    <div class="page-header">
+        <h1>🚀 Продвинутые темы</h1>
+        <p>Генераторы, итераторы, Proxy, Reflect, WeakMap, WeakSet и другие продвинутые возможности JavaScript</p>
+    </div>
+
+    <div class="content-section">
+        <h2>Итераторы и Генераторы</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 1: Итераторы</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">myIterable</span> = {
+    <span class="variable">items</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],
+    [<span class="function">Symbol</span>.<span class="variable">iterator</span>]() {
+        <span class="keyword">let</span> <span class="variable">index</span> = <span class="number">0</span>;
+        <span class="keyword">return</span> {
+            <span class="function">next</span>() {
+                <span class="keyword">if</span> (<span class="variable">index</span> &lt; <span class="keyword">this</span>.<span class="variable">items</span>.<span class="variable">length</span>) {
+                    <span class="keyword">return</span> { <span class="variable">value</span>: <span class="keyword">this</span>.<span class="variable">items</span>[<span class="variable">index</span>++], <span class="variable">done</span>: <span class="keyword">false</span> };
+                }
+                <span class="keyword">return</span> { <span class="variable">done</span>: <span class="keyword">true</span> };
+            }
+        };
+    }
+};
+
+<span class="keyword">for</span> (<span class="keyword">const</span> <span class="variable">item</span> <span class="keyword">of</span> <span class="variable">myIterable</span>) {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="variable">item</span>);
+}</code></pre>
+        </div>
+
+        <div class="code-block">
+            <span class="code-block-title">Пример 2: Генераторы</span>
+            <pre><code><span class="comment">// Генератор - функция с yield</span>
+<span class="function">function</span>* <span class="function">numberGenerator</span>() {
+    <span class="keyword">yield</span> <span class="number">1</span>;
+    <span class="keyword">yield</span> <span class="number">2</span>;
+    <span class="keyword">yield</span> <span class="number">3</span>;
+}
+
+<span class="keyword">const</span> <span class="variable">gen</span> = <span class="function">numberGenerator</span>();
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">gen</span>.<span class="function">next</span>().<span class="variable">value</span>);  <span class="comment">// 1</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">gen</span>.<span class="function">next</span>().<span class="variable">value</span>);  <span class="comment">// 2</span>
+
+<span class="comment">// Бесконечный генератор</span>
+<span class="function">function</span>* <span class="function">infiniteSequence</span>() {
+    <span class="keyword">let</span> <span class="variable">i</span> = <span class="number">0</span>;
+    <span class="keyword">while</span> (<span class="keyword">true</span>) {
+        <span class="keyword">yield</span> <span class="variable">i</span>++;
+    }
+}
+
+<span class="comment">// Генератор с параметрами</span>
+<span class="function">function</span>* <span class="function">range</span>(<span class="variable">start</span>, <span class="variable">end</span>) {
+    <span class="keyword">for</span> (<span class="keyword">let</span> <span class="variable">i</span> = <span class="variable">start</span>; <span class="variable">i</span> &lt;= <span class="variable">end</span>; <span class="variable">i</span>++) {
+        <span class="keyword">yield</span> <span class="variable">i</span>;
+    }
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Proxy</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 3: Proxy для перехвата операций</span>
+            <pre><code><span class="keyword">const</span> <span class="variable">target</span> = { <span class="variable">name</span>: <span class="string">"Иван"</span> };
+
+<span class="keyword">const</span> <span class="variable">proxy</span> = <span class="keyword">new</span> <span class="function">Proxy</span>(<span class="variable">target</span>, {
+    <span class="function">get</span>(<span class="variable">target</span>, <span class="variable">prop</span>) {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">`Чтение свойства ${prop}`</span>);
+        <span class="keyword">return</span> <span class="variable">target</span>[<span class="variable">prop</span>];
+    },
+    <span class="function">set</span>(<span class="variable">target</span>, <span class="variable">prop</span>, <span class="variable">value</span>) {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">`Установка ${prop} = ${value}`</span>);
+        <span class="variable">target</span>[<span class="variable">prop</span>] = <span class="variable">value</span>;
+        <span class="keyword">return</span> <span class="keyword">true</span>;
+    }
+});
+
+<span class="variable">proxy</span>.<span class="variable">name</span>;  <span class="comment">// Логирует "Чтение свойства name"</span>
+<span class="variable">proxy</span>.<span class="variable">age</span> = <span class="number">30</span>;  <span class="comment">// Логирует "Установка age = 30"</span></code></pre>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>WeakMap и WeakSet</h2>
+        
+        <div class="code-block">
+            <span class="code-block-title">Пример 4: WeakMap и WeakSet</span>
+            <pre><code><span class="comment">// WeakMap - ключи только объекты, автоматическая очистка</span>
+<span class="keyword">const</span> <span class="variable">weakMap</span> = <span class="keyword">new</span> <span class="function">WeakMap</span>();
+<span class="keyword">const</span> <span class="variable">obj</span> = { <span class="variable">id</span>: <span class="number">1</span> };
+<span class="variable">weakMap</span>.<span class="function">set</span>(<span class="variable">obj</span>, <span class="string">"секретные данные"</span>);
+<span class="variable">weakMap</span>.<span class="function">get</span>(<span class="variable">obj</span>);  <span class="comment">// "секретные данные"</span>
+<span class="comment">// Когда obj удаляется, данные тоже удаляются автоматически</span>
+
+<span class="comment">// WeakSet - только объекты, автоматическая очистка</span>
+<span class="keyword">const</span> <span class="variable">weakSet</span> = <span class="keyword">new</span> <span class="function">WeakSet</span>();
+<span class="variable">weakSet</span>.<span class="function">add</span>(<span class="variable">obj</span>);
+<span class="variable">weakSet</span>.<span class="function">has</span>(<span class="variable">obj</span>);  <span class="comment">// true</span>
+
+<span class="comment">// Использование: приватные данные для объектов</span>
+<span class="keyword">const</span> <span class="variable">privateData</span> = <span class="keyword">new</span> <span class="function">WeakMap</span>();
+
+<span class="keyword">class</span> <span class="class-name">User</span> {
+    <span class="function">constructor</span>(<span class="variable">name</span>) {
+        <span class="keyword">this</span>.<span class="variable">name</span> = <span class="variable">name</span>;
+        <span class="variable">privateData</span>.<span class="function">set</span>(<span class="keyword">this</span>, { <span class="variable">password</span>: <span class="string">"secret"</span> });
+    }
+    
+    <span class="function">getPassword</span>() {
+        <span class="keyword">return</span> <span class="variable">privateData</span>.<span class="function">get</span>(<span class="keyword">this</span>).<span class="variable">password</span>;
+    }
+}</code></pre>
+        </div>
+    </div>
+</div>
+
