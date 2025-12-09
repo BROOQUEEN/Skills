@@ -7,18 +7,13 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <h1 class="logo">🎯 Скиллы</h1>
-            <p class="subtitle">Полный курс JavaScript для Middle Frontend разработчика</p>
-        </div>
-    </header>
+    <?php include 'includes/header.php'; ?>
 
     <main class="main">
         <div class="container">
+            <h2 class="section-title">Темы для изучения</h2>
+            
             <section class="topics-grid">
-                <h2 class="section-title">Темы для изучения</h2>
-                
                 <div class="topic-card" data-page="basics">
                     <div class="card-icon">📚</div>
                     <h3>Основы JavaScript</h3>
