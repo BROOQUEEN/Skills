@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ручное тестирование - Skills</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section h2 {
+            margin-top: 0;
+            color: #6366f1;
+        }
+        .test-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f9f9f9;
+            border-left: 3px solid #6366f1;
+        }
+        .test-result {
+            margin-top: 5px;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        .pass {
+            background: #d4edda;
+            color: #155724;
+        }
+        .fail {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        button {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #4f46e5;
+        }
+        #test-output {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Ручное тестирование проекта Skills</h1>
+    
+    <div class="test-section">
+        <h2>1. Проверка конфигурации</h2>
+        <div class="test-item">
+            <strong>Тест:</strong> TOPICS_CONFIG должен быть загружен<br>
+            <div id="test-config" class="test-result">Ожидание...</div>
+        </div>
+        <div class="test-item">
+            <strong>Тест:</strong> Все темы имеют обязательные поля<br>
+            <div id="test-config-fields" class="test-result">Ожидание...</div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Проверка ProgressManager</h2>
+        <div class="test-item">
+            <strong>Тест:</strong> Сохранение прогресса в localStorage<br>
+            <div id="test-progress-save" class="test-result">Ожидание...</div>
+        </div>
+        <div class="test-item">
+            <strong>Тест:</strong> Получение статистики прогресса<br>
+            <div id="test-progress-stats" class="test-result">Ожидание...</div>
+        </div>
+        <button onclick="testProgressReset()">Тест: Сброс прогресса</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Проверка навигации</h2>
+        <div class="test-item">
+            <strong>Тест:</strong> Проверка элементов DOM<br>
+            <div id="test-dom-elements" class="test-result">Ожидание...</div>
+        </div>
+        <button onclick="testFilter()">Тест: Фильтрация</button>
+        <button onclick="testSearch()">Тест: Поиск</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. Запуск всех тестов</h2>
+        <button onclick="runAllTests()" style="background: #10b981; font-size: 16px; padding: 15px 30px;">
+            ▶ Запустить все тесты
+        </button>
+        <div id="test-output"></div>
+    </div>
+    
+    <!-- Подключаем скрипты проекта -->
+    <script src="../js/config.js"></script>
+    <script src="../js/progress.js"></script>
+    
+    <script>
+        let testOutput = [];
+        
+        function log(message, type = 'info') {
+            const prefix = type === 'pass' ? '✅' : type === 'fail' ? '❌' : 'ℹ️';
+            testOutput.push(`${prefix} ${message}`);
+            updateOutput();
+        }
+        
+        function updateOutput() {
+            document.getElementById('test-output').textContent = testOutput.join('\n');
+        }
+        
+        function setResult(elementId, message, passed) {
+            const el = document.getElementById(elementId);
+            el.textContent = message;
+            el.className = 'test-result ' + (passed ? 'pass' : 'fail');
+        }
+        
+        // Тесты конфигурации
+        function testConfig() {
+            try {
+                if (typeof TOPICS_CONFIG !== 'undefined' && Array.isArray(TOPICS_CONFIG)) {
+                    setResult('test-config', `✓ Найдено ${TOPICS_CONFIG.length} тем`, true);
+                    log(`Конфигурация загружена: ${TOPICS_CONFIG.length} тем`, 'pass');
+                } else {
+                    setResult('test-config', '✗ TOPICS_CONFIG не найден', false);
+                    log('TOPICS_CONFIG не найден', 'fail');
+                }
+                
+                // Проверка полей
+                if (typeof TOPICS_CONFIG !== 'undefined') {
+                    let allValid = true;
+                    TOPICS_CONFIG.forEach((topic, index) => {
+                        const required = ['id', 'icon', 'title', 'description', 'badge', 'category'];
+                        const missing = required.filter(field => !topic[field]);
+                        if (missing.length > 0) {
+                            allValid = false;
+                            log(`Тема ${index}: отсутствуют поля ${missing.join(', ')}`, 'fail');
+                        }
+                    });
+                    setResult('test-config-fields', allValid ? '✓ Все поля на месте' : '✗ Есть недостающие поля', allValid);
+                }
+            } catch (e) {
+                setResult('test-config', `✗ Ошибка: ${e.message}`, false);
+                log(`Ошибка при проверке конфигурации: ${e.message}`, 'fail');
+            }
+        }
+        
+        // Тесты прогресса
+        function testProgress() {
+            try {
+                if (typeof ProgressManager === 'undefined') {
+                    setResult('test-progress-save', '✗ ProgressManager не найден', false);
+                    return;
+                }
+                
+                // Тест сохранения
+                const testTopic = 'test-topic-' + Date.now();
+                ProgressManager.markAsVisited(testTopic);
+                const visited = ProgressManager.getVisitedTopics();
+                
+                if (visited.includes(testTopic)) {
+                    setResult('test-progress-save', '✓ Прогресс сохраняется', true);
+                    log('Прогресс успешно сохраняется', 'pass');
+                } else {
+                    setResult('test-progress-save', '✗ Ошибка сохранения', false);
+                    log('Ошибка сохранения прогресса', 'fail');
+                }
+                
+                // Тест статистики
+                const stats = ProgressManager.getStats();
+                if (stats && typeof stats.visited === 'number' && typeof stats.total === 'number') {
+                    setResult('test-progress-stats', `✓ Статистика: ${stats.visited}/${stats.total} (${stats.percentage}%)`, true);
+                    log(`Статистика работает: ${stats.visited}/${stats.total} тем`, 'pass');
+                } else {
+                    setResult('test-progress-stats', '✗ Ошибка получения статистики', false);
+                }
+            } catch (e) {
+                log(`Ошибка при проверке прогресса: ${e.message}`, 'fail');
+            }
+        }
+        
+        function testProgressReset() {
+            try {
+                const before = ProgressManager.getVisitedTopics().length;
+                ProgressManager.reset();
+                const after = ProgressManager.getVisitedTopics().length;
+                
+                if (after === 0) {
+                    alert('✅ Сброс прогресса работает корректно');
+                    log('Сброс прогресса работает', 'pass');
+                } else {
+                    alert('❌ Ошибка сброса прогресса');
+                    log('Ошибка сброса прогресса', 'fail');
+                }
+            } catch (e) {
+                alert('❌ Ошибка: ' + e.message);
+                log(`Ошибка при сбросе: ${e.message}`, 'fail');
+            }
+        }
+        
+        // Тесты DOM
+        function testDOM() {
+            try {
+                const requiredElements = [
+                    'topic-search',
+                    'category-filter',
+                    'progress-bar',
+                    'progress-text'
+                ];
+                
+                let allFound = true;
+                requiredElements.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (!el) {
+                        allFound = false;
+                        log(`Элемент #${id} не найден`, 'fail');
+                    }
+                });
+                
+                if (allFound) {
+                    setResult('test-dom-elements', '✓ Все элементы DOM найдены', true);
+                    log('Все элементы DOM на месте', 'pass');
+                } else {
+                    setResult('test-dom-elements', '✗ Некоторые элементы не найдены', false);
+                }
+            } catch (e) {
+                log(`Ошибка при проверке DOM: ${e.message}`, 'fail');
+            }
+        }
+        
+        function testFilter() {
+            if (typeof filterTopics === 'undefined') {
+                alert('Функция filterTopics недоступна в текущем контексте');
+                return;
+            }
+            log('Фильтрация требует DOM окружения (откройте index.php)', 'info');
+        }
+        
+        function testSearch() {
+            log('Поиск требует DOM окружения (откройте index.php)', 'info');
+        }
+        
+        // Запуск всех тестов
+        function runAllTests() {
+            testOutput = [];
+            log('=== Запуск всех тестов ===', 'info');
+            log('', 'info');
+            
+            log('1. Тестирование конфигурации...', 'info');
+            testConfig();
+            log('', 'info');
+            
+            log('2. Тестирование прогресса...', 'info');
+            testProgress();
+            log('', 'info');
+            
+            log('3. Тестирование DOM...', 'info');
+            testDOM();
+            log('', 'info');
+            
+            log('=== Тесты завершены ===', 'info');
+            
+            const passed = testOutput.filter(t => t.includes('✅')).length;
+            const failed = testOutput.filter(t => t.includes('❌')).length;
+            log(`\nРезультат: ${passed} успешно, ${failed} ошибок`, passed > 0 ? 'pass' : 'fail');
+        }
+        
+        // Автозапуск при загрузке
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                testConfig();
+                testProgress();
+            }, 100);
+        });
+    </script>
+</body>
+</html>
+

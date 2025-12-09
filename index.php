@@ -3,121 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Полный курс JavaScript для Middle Frontend разработчика. Изучайте основы, функции, массивы, объекты, асинхронность, DOM, события и многое другое.">
+    <meta name="keywords" content="JavaScript, обучение, курс, программирование, frontend, разработка">
+    <meta name="author" content="Скиллы">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Скиллы - Обучение JavaScript">
+    <meta property="og:description" content="Полный курс JavaScript для Middle Frontend разработчика">
+    <meta property="og:url" content="">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="Скиллы - Обучение JavaScript">
+    <meta property="twitter:description" content="Полный курс JavaScript для Middle Frontend разработчика">
+    
     <title>Скиллы - Обучение JavaScript</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
     <link rel="stylesheet" href="css/style.css">
+    <meta name="theme-color" content="#6366f1">
 </head>
 <body>
     <?php include 'includes/header.php'; ?>
 
     <main class="main">
         <div class="container">
-            <h2 class="section-title">Темы для изучения</h2>
+            <div class="main-header">
+                <div class="main-header-title">
+                    <h2 class="section-title">Темы для изучения</h2>
+                    <a href="quiz.php" class="quiz-link-btn">🧪 Пройти тесты</a>
+                </div>
+                
+                <!-- Прогресс изучения -->
+                <div class="progress-container" id="progress-container">
+                    <div class="progress-bar-wrapper">
+                        <div class="progress-bar" id="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem;">
+                        <p class="progress-text" id="progress-text">Изучено: 0 из 15 тем (0%)</p>
+                        <button id="reset-progress-btn" class="reset-progress-btn" title="Сбросить прогресс" aria-label="Сбросить прогресс">↺ Сбросить</button>
+                    </div>
+                </div>
+            </div>
             
-            <section class="topics-grid">
-                <div class="topic-card" data-page="basics">
-                    <div class="card-icon">📚</div>
-                    <h3>Основы JavaScript</h3>
-                    <p>Переменные, типы данных, операторы, условия, циклы</p>
-                    <span class="card-badge">Базовый уровень</span>
+            <!-- Поиск и фильтры -->
+            <div class="search-filters">
+                <div class="search-wrapper">
+                    <input 
+                        type="search" 
+                        id="topic-search" 
+                        class="search-input" 
+                        placeholder="Поиск тем..." 
+                        aria-label="Поиск тем для изучения"
+                        autocomplete="off"
+                    >
+                    <span class="search-icon" aria-hidden="true">🔍</span>
                 </div>
-
-                <div class="topic-card" data-page="functions">
-                    <div class="card-icon">⚙️</div>
-                    <h3>Функции</h3>
-                    <p>Объявление функций, стрелочные функции, замыкания, каррирование</p>
-                    <span class="card-badge">Важно</span>
-                </div>
-
-                <div class="topic-card" data-page="arrays">
-                    <div class="card-icon">📦</div>
-                    <h3>Массивы</h3>
-                    <p>Методы массивов: map, filter, reduce, forEach и другие</p>
-                    <span class="card-badge">Важно</span>
-                </div>
-
-                <div class="topic-card" data-page="objects">
-                    <div class="card-icon">🎁</div>
-                    <h3>Объекты и Прототипы</h3>
-                    <p>Работа с объектами, прототипное наследование, классы ES6</p>
-                    <span class="card-badge">Важно</span>
-                </div>
-
-                <div class="topic-card" data-page="es6">
-                    <div class="card-icon">✨</div>
-                    <h3>ES6+ Синтаксис</h3>
-                    <p>Деструктуризация, spread/rest, шаблонные строки, модули</p>
-                    <span class="card-badge">Важно</span>
-                </div>
-
-                <div class="topic-card" data-page="async">
-                    <div class="card-icon">⏳</div>
-                    <h3>Асинхронность</h3>
-                    <p>Promises, async/await, обработка ошибок, параллельные запросы</p>
-                    <span class="card-badge">Критично</span>
-                </div>
-
-                <div class="topic-card" data-page="oop">
-                    <div class="card-icon">🏛️</div>
-                    <h3>ООП в JavaScript</h3>
-                    <p>Классы, наследование, инкапсуляция, полиморфизм</p>
-                    <span class="card-badge">Важно</span>
-                </div>
-
-                <div class="topic-card" data-page="scope">
-                    <div class="card-icon">🔍</div>
-                    <h3>Область видимости и this</h3>
-                    <p>Lexical scope, hoisting, контекст выполнения, bind/call/apply</p>
-                    <span class="card-badge">Важно</span>
-                </div>
-
-                <div class="topic-card" data-page="dom">
-                    <div class="card-icon">🌳</div>
-                    <h3>Работа с DOM</h3>
-                    <p>Выбор элементов, манипуляции, создание элементов, оптимизация</p>
-                    <span class="card-badge">Критично</span>
-                </div>
-
-                <div class="topic-card" data-page="events">
-                    <div class="card-icon">🎪</div>
-                    <h3>События</h3>
-                    <p>Обработчики событий, делегирование, кастомные события</p>
-                    <span class="card-badge">Критично</span>
-                </div>
-
-                <div class="topic-card" data-page="api">
-                    <div class="card-icon">🌐</div>
-                    <h3>Работа с API</h3>
-                    <p>Fetch API, XMLHttpRequest, обработка ответов, ошибок</p>
-                    <span class="card-badge">Критично</span>
-                </div>
-
-                <div class="topic-card" data-page="advanced">
-                    <div class="card-icon">🚀</div>
-                    <h3>Продвинутые темы</h3>
-                    <p>Генераторы, итераторы, Proxy, Reflect, WeakMap, WeakSet</p>
-                    <span class="card-badge">Продвинутый</span>
-                </div>
-
-                <div class="topic-card" data-page="patterns">
-                    <div class="card-icon">🎨</div>
-                    <h3>Паттерны проектирования</h3>
-                    <p>Модуль, Singleton, Factory, Observer, Promise и другие</p>
-                    <span class="card-badge">Продвинутый</span>
-                </div>
-
-                <div class="topic-card" data-page="regexp">
-                    <div class="card-icon">🔤</div>
-                    <h3>Регулярные выражения</h3>
-                    <p>Синтаксис, методы, флаги, практические примеры</p>
-                    <span class="card-badge">Важно</span>
-                </div>
-
-                <div class="topic-card" data-page="errors">
-                    <div class="card-icon">⚠️</div>
-                    <h3>Обработка ошибок</h3>
-                    <p>Try/catch, типы ошибок, кастомные ошибки, best practices</p>
-                    <span class="card-badge">Важно</span>
-                </div>
+                
+                <select id="category-filter" class="category-filter" aria-label="Фильтр по категориям">
+                    <option value="all">Все категории</option>
+                    <option value="basic">Базовый уровень</option>
+                    <option value="important">Важно</option>
+                    <option value="critical">Критично</option>
+                    <option value="advanced">Продвинутый</option>
+                </select>
+            </div>
+            
+            <section class="topics-grid" role="list" aria-label="Темы для изучения" id="topics-grid">
+                <!-- Карточки будут сгенерированы из config.js -->
+                <noscript>
+                    <p>Для отображения тем включите JavaScript в вашем браузере.</p>
+                </noscript>
             </section>
         </div>
     </main>
@@ -128,6 +84,9 @@
         </div>
     </footer>
 
+    <script src="js/config.js"></script>
+    <script src="js/progress.js"></script>
+    <script src="js/database.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
