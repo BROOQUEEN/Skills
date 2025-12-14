@@ -1,171 +1,7 @@
-// Кеш для загруженных страниц
-const pageCache = new Map();
-
-// Инициализация поиска и фильтрации
-function initSearchAndFilter() {
-    const searchInput = document.getElementById('topic-search');
-    const categoryFilter = document.getElementById('category-filter');
-    const topicsGrid = document.querySelector('.topics-grid');
-    
-    if (!topicsGrid) return;
-    
-    // Поиск
-    if (searchInput) {
-        let searchTimeout;
-        searchInput.addEventListener('input', (e) => {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                filterTopics(e.target.value, categoryFilter?.value);
-            }, 300);
-        });
-    }
-    
-    // Фильтр по категориям
-    if (categoryFilter) {
-        categoryFilter.addEventListener('change', (e) => {
-            filterTopics(searchInput?.value || '', e.target.value);
-        });
-    }
-}
-
-// Фильтрация тем
-function filterTopics(searchQuery = '', category = 'all') {
-    const cards = document.querySelectorAll('.topic-card');
-    const query = searchQuery.toLowerCase().trim();
-    let visibleCount = 0;
-    
-    cards.forEach(card => {
-        const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
-        const description = card.querySelector('p')?.textContent.toLowerCase() || '';
-        const cardCategory = card.getAttribute('data-category') || '';
-        
-        const matchesSearch = !query || title.includes(query) || description.includes(query);
-        const matchesCategory = category === 'all' || cardCategory === category;
-        
-        if (matchesSearch && matchesCategory) {
-            card.style.display = '';
-            visibleCount++;
-        } else {
-            card.style.display = 'none';
-        }
-    });
-    
-    // Показываем сообщение, если ничего не найдено
-    let noResults = document.getElementById('no-results');
-    if (visibleCount === 0) {
-        if (!noResults) {
-            noResults = document.createElement('div');
-            noResults.id = 'no-results';
-            noResults.className = 'no-results';
-            noResults.textContent = 'Темы не найдены';
-            document.querySelector('.topics-grid')?.parentElement?.appendChild(noResults);
-        }
-        noResults.style.display = 'block';
-    } else if (noResults) {
-        noResults.style.display = 'none';
-    }
-}
-
-// Генерация карточек тем из конфигурации
-function generateTopicCards() {
-    const grid = document.getElementById('topics-grid');
-    if (!grid || typeof TOPICS_CONFIG === 'undefined') {
-        // Fallback: если config не загружен, используем существующий HTML
-        return;
-    }
-    
-    const visitedTopics = typeof ProgressManager !== 'undefined' 
-        ? ProgressManager.getVisitedTopics() 
-        : [];
-    
-    grid.innerHTML = TOPICS_CONFIG.map(topic => {
-        const isVisited = visitedTopics.includes(topic.id);
-        return createTopicCard(topic, isVisited);
-    }).join('');
-    
-    // Устанавливаем атрибуты доступности для новых карточек
-    const topicCards = grid.querySelectorAll('.topic-card');
-    topicCards.forEach(card => {
-        card.setAttribute('tabindex', '0');
-        card.setAttribute('role', 'button');
-        const title = card.querySelector('h3')?.textContent || '';
-        card.setAttribute('aria-label', `Открыть тему: ${title}`);
-    });
-}
-
 // Навигация по страницам
 document.addEventListener('DOMContentLoaded', function() {
-    // Генерация карточек тем
-    generateTopicCards();
-    
-    // Инициализация поиска
-    initSearchAndFilter();
-    
-    // Инициализация прогресса
-    if (typeof ProgressManager !== 'undefined') {
-        ProgressManager.updateProgressUI();
-        
-        // Синхронизируем с базой данных при загрузке
-        if (typeof DatabaseAPI !== 'undefined') {
-            DatabaseAPI.syncProgress().then(data => {
-                if (data && data.success) {
-                    ProgressManager.updateProgressUI();
-                }
-            }).catch(err => {
-                console.warn('Не удалось синхронизировать прогресс:', err);
-            });
-        }
-        
-        // Обработчик кнопки сброса прогресса
-        const resetBtn = document.getElementById('reset-progress-btn');
-        if (resetBtn) {
-            resetBtn.addEventListener('click', function() {
-                if (confirm('Вы уверены, что хотите сбросить весь прогресс? Это действие нельзя отменить.')) {
-                    ProgressManager.reset();
-                    
-                    // Сбросить в БД
-                    if (typeof DatabaseAPI !== 'undefined') {
-                        DatabaseAPI.resetProgress().then(() => {
-                            ProgressManager.updateProgressUI();
-                            alert('Прогресс успешно сброшен');
-                        }).catch(err => {
-                            console.error('Ошибка сброса прогресса в БД:', err);
-                        });
-                    } else {
-                        ProgressManager.updateProgressUI();
-                        alert('Прогресс успешно сброшен');
-                    }
-                }
-            });
-        }
-    }
-    
-    // Делегирование событий для карточек
-    const topicsGrid = document.querySelector('.topics-grid');
-    if (topicsGrid) {
-        topicsGrid.addEventListener('click', function(e) {
-            const card = e.target.closest('.topic-card');
-            if (card) {
-                const pageName = card.getAttribute('data-page');
-                if (pageName) {
-                    loadPage(pageName);
-                }
-            }
-        });
-        
-        topicsGrid.addEventListener('keydown', function(e) {
-            const card = e.target.closest('.topic-card');
-            if (card && (e.key === 'Enter' || e.key === ' ')) {
-                e.preventDefault();
-                const pageName = card.getAttribute('data-page');
-                if (pageName) {
-                    loadPage(pageName);
-                }
-            }
-        });
-    }
-    
-    // Атрибуты доступности устанавливаются в generateTopicCards()
+    // Инициализация главной страницы
+    initHomePage();
     
     // Обработка кнопки "Назад"
     document.addEventListener('click', function(e) {
@@ -175,249 +11,247 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Поддержка клавиши ESC для возврата
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            const pageContainer = document.getElementById('page-container');
-            if (pageContainer && pageContainer.style.display !== 'none') {
-                showHomePage();
+    // Обработка кнопки сброса прогресса
+    const resetBtn = document.getElementById('reset-progress-btn');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', function() {
+            if (confirm('Вы уверены, что хотите сбросить весь прогресс?')) {
+                ProgressManager.reset();
+                if (typeof DatabaseManager !== 'undefined') {
+                    DatabaseManager.resetProgress();
+                }
+                initHomePage();
             }
-        }
-    });
-    
-    // Обработка истории браузера (кнопки назад/вперед)
-    window.addEventListener('popstate', function(e) {
-        if (e.state && e.state.page) {
-            loadPage(e.state.page, false); // false = не добавлять в историю
-        } else {
-            showHomePage(false);
-        }
-    });
-    
-    // Обработка начального состояния из URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const pageParam = urlParams.get('page');
-    if (pageParam) {
-        loadPage(pageParam, false);
+        });
     }
-    
-    // Prefetch популярных страниц
-    prefetchPopularPages();
 });
 
-/**
- * Загружает страницу с кешированием и индикатором загрузки
- * @param {string} pageName - Имя страницы для загрузки
- * @param {boolean} addToHistory - Добавлять ли в историю браузера
- */
-async function loadPage(pageName, addToHistory = true) {
-    if (!pageName) return;
+// Инициализация главной страницы
+let topicsGridClickHandler = null;
+
+function initHomePage() {
+    // Генерируем карточки тем
+    generateTopicCards();
     
-    const mainContent = document.querySelector('.main .container');
-    const pageContainer = getOrCreatePageContainer();
+    // Инициализируем поиск и фильтры
+    initSearchAndFilter();
     
-    // Показываем индикатор загрузки
-    showLoadingIndicator();
+    // Обновляем прогресс
+    if (typeof ProgressManager !== 'undefined' && ProgressManager.updateProgressUI) {
+        ProgressManager.updateProgressUI();
+    }
     
+    // Используем делегирование событий для динамически созданных карточек
+    // Добавляем обработчик только один раз
+    const topicsGrid = document.getElementById('topics-grid');
+    if (topicsGrid && !topicsGridClickHandler) {
+        topicsGridClickHandler = function(e) {
+            const card = e.target.closest('.topic-card');
+            if (card) {
+                const pageName = card.getAttribute('data-page');
+                if (pageName) {
+                    loadPage(pageName);
+                }
+            }
+        };
+        topicsGrid.addEventListener('click', topicsGridClickHandler);
+    }
+}
+
+// Генерация карточек тем из конфигурации
+function generateTopicCards() {
+    const topicsGrid = document.getElementById('topics-grid');
+    if (!topicsGrid || typeof TOPICS_CONFIG === 'undefined') {
+        console.error('Не найдена конфигурация тем или контейнер для карточек');
+        return;
+    }
+    
+    // Получаем список изученных тем
+    const visitedTopics = typeof ProgressManager !== 'undefined' && ProgressManager.getVisitedTopics 
+        ? ProgressManager.getVisitedTopics() 
+        : [];
+    
+    // Генерируем HTML для всех карточек
+    let cardsHTML = '';
+    TOPICS_CONFIG.forEach(topic => {
+        const isVisited = visitedTopics.includes(topic.id);
+        cardsHTML += createTopicCard(topic, isVisited);
+    });
+    
+    topicsGrid.innerHTML = cardsHTML;
+}
+
+async function loadPage(pageName) {
     // Скрываем главную страницу
+    const mainContent = document.querySelector('.main .container');
     if (mainContent) {
         mainContent.style.display = 'none';
     }
     
     try {
-        let html;
+        // Загружаем контент страницы
+        const response = await fetch(`pages/${pageName}.html`);
         
-        // Проверяем кеш
-        if (pageCache.has(pageName)) {
-            html = pageCache.get(pageName);
-            // Небольшая задержка для плавности анимации
-            await new Promise(resolve => setTimeout(resolve, 150));
-        } else {
-            // Загружаем страницу
-            const response = await fetch(`pages/${pageName}.html`);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            html = await response.text();
-            
-            // Сохраняем в кеш
-            pageCache.set(pageName, html);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        // Вставляем контент
+        const html = await response.text();
+        
+        // Создаем контейнер для страницы, если его еще нет
+        let pageContainer = document.getElementById('page-container');
+        if (!pageContainer) {
+            pageContainer = document.createElement('div');
+            pageContainer.id = 'page-container';
+            const main = document.querySelector('.main');
+            if (main) {
+                main.appendChild(pageContainer);
+            }
+        }
+        
         pageContainer.innerHTML = html;
         pageContainer.style.display = 'block';
-        pageContainer.setAttribute('aria-live', 'polite');
         
-        // Отмечаем тему как изученную
-        if (typeof ProgressManager !== 'undefined') {
+        // Добавляем кнопку с ссылкой на тест
+        addQuizButton(pageName);
+        
+        // Отмечаем тему как посещенную
+        if (typeof ProgressManager !== 'undefined' && ProgressManager.markAsVisited) {
             ProgressManager.markAsVisited(pageName);
-            
-            // Сохраняем в базу данных
-            if (typeof DatabaseAPI !== 'undefined') {
-                DatabaseAPI.saveProgress(pageName, 0, false).catch(err => {
-                    console.warn('Не удалось сохранить прогресс в БД:', err);
-                });
+            // Синхронизируем с базой данных
+            if (typeof DatabaseManager !== 'undefined' && DatabaseManager.saveProgress) {
+                DatabaseManager.saveProgress(pageName);
             }
         }
         
-        // Обновляем URL и историю
-        if (addToHistory) {
-            const newUrl = `${window.location.pathname}?page=${pageName}`;
-            window.history.pushState({ page: pageName }, '', newUrl);
+        // Обновляем заголовок страницы
+        const topic = typeof TOPICS_CONFIG !== 'undefined' 
+            ? TOPICS_CONFIG.find(t => t.id === pageName)
+            : null;
+        if (topic) {
+            document.title = `${topic.title} - Скиллы`;
         }
-        
-        // Обновляем title страницы
-        updatePageTitle(pageName);
         
         // Прокручиваем наверх
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        
-        // Фокус на контейнер для доступности
-        pageContainer.focus();
-        
     } catch (error) {
         console.error('Ошибка загрузки страницы:', error);
-        showError(`Не удалось загрузить страницу "${pageName}". Проверьте подключение к интернету.`);
-        
-        // Возвращаемся на главную при ошибке
-        showHomePage(false);
-    } finally {
-        hideLoadingIndicator();
+        alert('Страница пока не доступна');
+        // Показываем главную страницу обратно при ошибке
+        showHomePage();
     }
 }
 
-/**
- * Показывает главную страницу
- * @param {boolean} addToHistory - Добавлять ли в историю браузера
- */
-function showHomePage(addToHistory = true) {
+function showHomePage() {
+    // Показываем главную страницу
     const mainContent = document.querySelector('.main .container');
-    const pageContainer = document.getElementById('page-container');
-    
     if (mainContent) {
         mainContent.style.display = 'block';
     }
     
+    // Скрываем страницу
+    const pageContainer = document.getElementById('page-container');
     if (pageContainer) {
         pageContainer.style.display = 'none';
     }
     
-    // Обновляем прогресс при возврате на главную
-    if (typeof ProgressManager !== 'undefined') {
-        ProgressManager.updateProgressUI();
-    }
-    
-    // Обновляем URL
-    if (addToHistory) {
-        window.history.pushState({}, '', window.location.pathname);
-    }
-    
-    // Восстанавливаем оригинальный title
+    // Обновляем заголовок страницы
     document.title = 'Скиллы - Обучение JavaScript';
+    
+    // Обновляем карточки и прогресс
+    initHomePage();
     
     // Прокручиваем наверх
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Добавление кнопки с ссылкой на тест в статью
+function addQuizButton(topicId) {
+    const pageHeader = document.querySelector('#page-container .page-header');
+    if (!pageHeader) {
+        return;
+    }
     
-    // Фокус на первую карточку для доступности
-    const firstCard = document.querySelector('.topic-card');
-    if (firstCard) {
-        firstCard.focus();
+    // Проверяем, есть ли уже кнопка
+    if (pageHeader.querySelector('.quiz-link-button')) {
+        return;
     }
-}
-
-/**
- * Создает или возвращает контейнер для страниц
- */
-function getOrCreatePageContainer() {
-    let pageContainer = document.getElementById('page-container');
-    if (!pageContainer) {
-        pageContainer = document.createElement('div');
-        pageContainer.id = 'page-container';
-        pageContainer.setAttribute('role', 'main');
-        pageContainer.setAttribute('aria-live', 'polite');
-        document.querySelector('.main').appendChild(pageContainer);
-    }
-    return pageContainer;
-}
-
-/**
- * Показывает индикатор загрузки
- */
-function showLoadingIndicator() {
-    let loader = document.getElementById('page-loader');
-    if (!loader) {
-        loader = document.createElement('div');
-        loader.id = 'page-loader';
-        loader.className = 'page-loader';
-        loader.innerHTML = `
-            <div class="loader-spinner"></div>
-            <p class="loader-text">Загрузка...</p>
-        `;
-        loader.setAttribute('aria-live', 'polite');
-        loader.setAttribute('aria-label', 'Загрузка страницы');
-        document.querySelector('.main').appendChild(loader);
-    }
-    loader.style.display = 'flex';
-}
-
-/**
- * Скрывает индикатор загрузки
- */
-function hideLoadingIndicator() {
-    const loader = document.getElementById('page-loader');
-    if (loader) {
-        loader.style.display = 'none';
-    }
-}
-
-/**
- * Показывает сообщение об ошибке
- */
-function showError(message) {
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-message';
-    errorDiv.setAttribute('role', 'alert');
-    errorDiv.textContent = message;
     
-    const main = document.querySelector('.main');
-    main.insertBefore(errorDiv, main.firstChild);
-    
-    // Автоматически скрываем через 5 секунд
-    setTimeout(() => {
-        errorDiv.remove();
-    }, 5000);
-}
-
-/**
- * Обновляет title страницы на основе загруженной темы
- */
-function updatePageTitle(pageName) {
-    const pageContainer = document.getElementById('page-container');
-    if (pageContainer) {
-        const pageHeader = pageContainer.querySelector('.page-header h1');
-        if (pageHeader) {
-            const pageTitle = pageHeader.textContent.trim();
-            document.title = `${pageTitle} - Скиллы`;
+    // Проверяем, есть ли тесты для этой темы (если доступна функция проверки)
+    if (typeof getQuizQuestions === 'function') {
+        const questions = getQuizQuestions(topicId);
+        if (!questions || questions.length === 0) {
+            return; // Нет тестов для этой темы
         }
     }
+    // Если функция проверки недоступна, показываем кнопку для всех тем
+    // (quiz.php сам проверит наличие тестов)
+    
+    // Создаем кнопку
+    const quizButton = document.createElement('a');
+    quizButton.href = `quiz.php?topic=${topicId}`;
+    quizButton.className = 'quiz-link-button';
+    quizButton.textContent = '🧪 Пройти тест по этой теме';
+    quizButton.setAttribute('aria-label', 'Перейти к тестированию по теме');
+    
+    // Добавляем кнопку в page-header
+    pageHeader.appendChild(quizButton);
 }
 
-/**
- * Prefetch популярных страниц для улучшения производительности
- */
-function prefetchPopularPages() {
-    const popularPages = ['basics', 'functions', 'arrays', 'async', 'dom'];
+// Инициализация поиска и фильтров
+let searchFilterInitialized = false;
+
+function initSearchAndFilter() {
+    const searchInput = document.getElementById('topic-search');
+    const categoryFilter = document.getElementById('category-filter');
     
-    popularPages.forEach(pageName => {
-        if (!pageCache.has(pageName)) {
-            const link = document.createElement('link');
-            link.rel = 'prefetch';
-            link.href = `pages/${pageName}.html`;
-            document.head.appendChild(link);
+    if (!searchInput || !categoryFilter) {
+        return;
+    }
+    
+    // Если уже инициализировано, просто обновляем фильтрацию
+    if (searchFilterInitialized) {
+        filterTopics();
+        return;
+    }
+    
+    // Функция фильтрации
+    function filterTopics() {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        const selectedCategory = categoryFilter.value;
+        const cards = document.querySelectorAll('.topic-card');
+        
+        cards.forEach(card => {
+            const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
+            const description = card.querySelector('p')?.textContent.toLowerCase() || '';
+            const category = card.getAttribute('data-category') || '';
+            
+            const matchesSearch = !searchTerm || 
+                title.includes(searchTerm) || 
+                description.includes(searchTerm);
+            
+            const matchesCategory = selectedCategory === 'all' || category === selectedCategory;
+            
+            if (matchesSearch && matchesCategory) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+    
+    // Обработчики событий (добавляем только один раз)
+    searchInput.addEventListener('input', filterTopics);
+    categoryFilter.addEventListener('change', filterTopics);
+    
+    // Очистка поиска при Escape
+    searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            searchInput.value = '';
+            filterTopics();
         }
     });
+    
+    searchFilterInitialized = true;
 }
 

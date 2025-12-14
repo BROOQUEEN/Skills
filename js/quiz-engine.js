@@ -9,32 +9,83 @@ const QuizEngine = {
     userAnswers: [],
     startTime: null,
     endTime: null,
+    shuffledQuestions: [], // Вопросы с перемешанными вариантами ответов
     
     /**
      * Начать тест по теме
+     * @param {string} topicId - ID темы
+     * @param {number} questionCount - Количество вопросов для теста (по умолчанию случайные из доступных)
      */
-    start(topicId) {
+    start(topicId, questionCount = null) {
         this.currentTopic = topicId;
-        this.currentQuestions = getQuizQuestions(topicId);
+        const allQuestions = getQuizQuestions(topicId);
+        
+        if (allQuestions.length === 0) {
+            return { error: 'Тесты для этой темы пока не доступны' };
+        }
+        
+        // Если вопросов больше 20, выбираем случайные вопросы
+        if (questionCount === null) {
+            questionCount = Math.min(20, allQuestions.length);
+        }
+        
+        // Перемешиваем и выбираем нужное количество
+        this.currentQuestions = this.shuffleArray([...allQuestions]).slice(0, questionCount);
+        // Перемешиваем варианты ответов для каждого вопроса
+        this.shuffledQuestions = this.currentQuestions.map(q => this.shuffleQuestionOptions(q));
         this.currentQuestionIndex = 0;
         this.userAnswers = [];
         this.startTime = Date.now();
-        
-        if (this.currentQuestions.length === 0) {
-            return { error: 'Тесты для этой темы пока не доступны' };
-        }
         
         return { success: true, total: this.currentQuestions.length };
     },
     
     /**
-     * Получить текущий вопрос
+     * Перемешивает массив (алгоритм Фишера-Йетса)
+     */
+    shuffleArray(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+    },
+    
+    /**
+     * Перемешивает варианты ответов в вопросе и обновляет индекс правильного ответа
+     */
+    shuffleQuestionOptions(question) {
+        // Создаем копию вопроса
+        const shuffledQuestion = {
+            ...question,
+            options: [...question.options],
+            originalCorrect: question.correct // Сохраняем оригинальный индекс
+        };
+        
+        // Создаем массив индексов для перемешивания
+        const indices = shuffledQuestion.options.map((_, index) => index);
+        const shuffledIndices = this.shuffleArray(indices);
+        
+        // Перемешиваем варианты ответов
+        const shuffledOptions = shuffledIndices.map(index => shuffledQuestion.options[index]);
+        shuffledQuestion.options = shuffledOptions;
+        
+        // Находим новый индекс правильного ответа
+        const newCorrectIndex = shuffledIndices.indexOf(question.correct);
+        shuffledQuestion.correct = newCorrectIndex;
+        
+        return shuffledQuestion;
+    },
+    
+    /**
+     * Получить текущий вопрос (с перемешанными вариантами ответов)
      */
     getCurrentQuestion() {
-        if (this.currentQuestionIndex >= this.currentQuestions.length) {
+        if (this.currentQuestionIndex >= this.shuffledQuestions.length) {
             return null;
         }
-        return this.currentQuestions[this.currentQuestionIndex];
+        return this.shuffledQuestions[this.currentQuestionIndex];
     },
     
     /**

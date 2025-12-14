@@ -74,8 +74,8 @@ const ProgressManager = {
         }
         
         // Обновляем индикаторы на карточках
-        // Если карточки генерируются динамически, они уже содержат правильные индикаторы
-        // Если нет - обновляем вручную
+        // Если карточки генерируются динамически через generateTopicCards, 
+        // они уже содержат правильные индикаторы при генерации
         document.querySelectorAll('.topic-card').forEach(card => {
             const topicId = card.getAttribute('data-page');
             if (topicId && this.isVisited(topicId)) {
@@ -95,12 +95,6 @@ const ProgressManager = {
                 }
             }
         });
-        
-        // Перегенерируем карточки если используется динамическая генерация
-        if (typeof generateTopicCards === 'function') {
-            generateTopicCards();
-            initSearchAndFilter(); // Переинициализируем поиск после генерации
-        }
     },
     
     /**

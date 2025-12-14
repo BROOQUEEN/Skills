@@ -12,6 +12,18 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         showQuizSelector();
     }
+    
+    // Поддержка клавиатуры для навигации в тестах
+    document.addEventListener('keydown', function(e) {
+        // Стрелка вправо для перехода к следующему вопросу
+        if (e.key === 'ArrowRight') {
+            const nextBtn = document.querySelector('.quiz-next-btn');
+            if (nextBtn && nextBtn.offsetParent !== null) {
+                e.preventDefault();
+                showQuestion();
+            }
+        }
+    });
 });
 
 /**
@@ -135,12 +147,23 @@ function showQuestion() {
  * Выбрать ответ
  */
 function selectAnswer(selectedIndex) {
+    const options = document.querySelectorAll('.quiz-option');
+    
+    // Предотвращаем повторные клики
+    options.forEach(option => {
+        option.disabled = true;
+    });
+    
+    // Получаем текущий вопрос ДО ответа (так как answer() увеличивает индекс)
+    const currentQuestion = QuizEngine.getCurrentQuestion();
+    if (!currentQuestion) {
+        return;
+    }
+    
     const answer = QuizEngine.answer(selectedIndex);
     
     // Показать правильный/неправильный ответ
-    const options = document.querySelectorAll('.quiz-option');
     options.forEach((option, index) => {
-        option.disabled = true;
         if (index === answer.correct) {
             option.classList.add('correct');
         } else if (index === selectedIndex && !answer.isCorrect) {
@@ -148,14 +171,11 @@ function selectAnswer(selectedIndex) {
         }
     });
     
-    // Показать объяснение
-    const question = QuizEngine.currentQuestions[answer.questionId - 1];
-    showExplanation(question.explanation, answer.isCorrect);
+    // Показать объяснение (используем сохраненный вопрос)
+    showExplanation(currentQuestion.explanation, answer.isCorrect);
     
-    // Переход к следующему вопросу через 2 секунды
-    setTimeout(() => {
-        showQuestion();
-    }, 2000);
+    // Показать кнопку "Следующий вопрос"
+    showNextButton();
 }
 
 /**
@@ -163,6 +183,13 @@ function selectAnswer(selectedIndex) {
  */
 function showExplanation(text, isCorrect) {
     const container = document.querySelector('.quiz-question');
+    
+    // Удаляем предыдущее объяснение, если есть
+    const oldExplanation = container.querySelector('.quiz-explanation');
+    if (oldExplanation) {
+        oldExplanation.remove();
+    }
+    
     const explanation = document.createElement('div');
     explanation.className = `quiz-explanation ${isCorrect ? 'correct' : 'incorrect'}`;
     explanation.innerHTML = `
@@ -170,6 +197,40 @@ function showExplanation(text, isCorrect) {
         <div class="quiz-explanation-text">${text}</div>
     `;
     container.appendChild(explanation);
+}
+
+/**
+ * Показать кнопку "Следующий вопрос"
+ */
+function showNextButton() {
+    const container = document.querySelector('.quiz-question');
+    
+    // Удаляем предыдущую кнопку, если есть
+    const oldButton = container.querySelector('.quiz-next-btn');
+    if (oldButton) {
+        oldButton.remove();
+    }
+    
+    const nextButton = document.createElement('button');
+    nextButton.className = 'quiz-next-btn';
+    nextButton.innerHTML = 'Следующий вопрос → <span class="quiz-keyboard-hint">(→ или Enter)</span>';
+    nextButton.onclick = function() {
+        showQuestion();
+    };
+    
+    // Поддержка клавиатуры
+    nextButton.setAttribute('tabindex', '0');
+    nextButton.focus();
+    
+    container.appendChild(nextButton);
+    
+    // Можно перейти на Enter, Space или стрелку вправо
+    nextButton.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowRight') {
+            e.preventDefault();
+            showQuestion();
+        }
+    });
 }
 
 /**

@@ -82,8 +82,81 @@
 }</code></pre>
         </div>
 
+        <h3>Специальные значения</h3>
+        <div class="code-block">
+            <pre><code><span class="comment">// NaN (Not a Number) - результат неверной математической операции</span>
+<span class="keyword">const</span> <span class="variable">result</span> = <span class="number">0</span> / <span class="number">0</span>;  <span class="comment">// NaN</span>
+<span class="keyword">const</span> <span class="variable">result2</span> = <span class="string">"текст"</span> * <span class="number">5</span>;  <span class="comment">// NaN</span>
+
+<span class="comment">// Важно: NaN не равно самому себе!</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="keyword">NaN</span> === <span class="keyword">NaN</span>);  <span class="comment">// false</span>
+<span class="comment">// Для проверки используйте:</span>
+<span class="function">Number</span>.<span class="function">isNaN</span>(<span class="variable">result</span>);  <span class="comment">// true (рекомендуется)</span>
+<span class="function">isNaN</span>(<span class="variable">result</span>);  <span class="comment">// true (менее строгая версия, может дать неожиданные результаты)</span>
+
+<span class="comment">// Infinity - математическая бесконечность</span>
+<span class="keyword">const</span> <span class="variable">inf</span> = <span class="number">1</span> / <span class="number">0</span>;  <span class="comment">// Infinity</span>
+<span class="keyword">const</span> <span class="variable">negInf</span> = -<span class="number">1</span> / <span class="number">0</span>;  <span class="comment">// -Infinity</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="number">1</span> / <span class="number">0</span>);  <span class="comment">// Infinity</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="number">0</span> / <span class="number">0</span>);  <span class="comment">// NaN</span>
+
+<span class="comment">// null vs undefined</span>
+<span class="keyword">const</span> <span class="variable">x</span> = <span class="keyword">null</span>;        <span class="comment">// Намеренное отсутствие значения</span>
+<span class="keyword">let</span> <span class="variable">y</span>;                  <span class="comment">// undefined - значение не присвоено</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="keyword">null</span> == <span class="keyword">undefined</span>);   <span class="comment">// true (нестрогое сравнение - специальное правило)</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="keyword">null</span> === <span class="keyword">undefined</span>);  <span class="comment">// false (строгое сравнение)</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">typeof</span> <span class="keyword">undefined</span>);  <span class="comment">// "undefined"</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">typeof</span> <span class="keyword">null</span>);     <span class="comment">// "object" (известный баг JavaScript)</span></code></pre>
+        </div>
+
+        <h3>Truthy и Falsy значения</h3>
+        <div class="code-block">
+            <pre><code><span class="comment">// Falsy значения (преобразуются в false):</span>
+<span class="comment">// false, 0, -0, 0n (BigInt), "", null, undefined, NaN</span>
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Boolean</span>(<span class="keyword">false</span>));   <span class="comment">// false</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Boolean</span>(<span class="number">0</span>));       <span class="comment">// false</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Boolean</span>(<span class="string">""</span>));      <span class="comment">// false</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Boolean</span>(<span class="keyword">null</span>));     <span class="comment">// false</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Boolean</span>(<span class="keyword">undefined</span>)); <span class="comment">// false</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Boolean</span>(<span class="keyword">NaN</span>));      <span class="comment">// false</span>
+
+<span class="comment">// Truthy значения (преобразуются в true):</span>
+<span class="comment">// Все остальное, включая:</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Boolean</span>([]));        <span class="comment">// true (пустой массив)</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Boolean</span>({}));        <span class="comment">// true (пустой объект)</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Boolean</span>(<span class="string">"0"</span>));      <span class="comment">// true (непустая строка)</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Boolean</span>(<span class="string">"false"</span>));  <span class="comment">// true (непустая строка)</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Boolean</span>(<span class="number">-1</span>));       <span class="comment">// true (любое ненулевое число)</span></code></pre>
+        </div>
+
+        <h3>Проверка типов</h3>
+        <div class="code-block">
+            <pre><code><span class="comment">// typeof - возвращает строку с типом</span>
+<span class="function">typeof</span> <span class="number">42</span>;              <span class="comment">// "number"</span>
+<span class="function">typeof</span> <span class="string">"text"</span>;          <span class="comment">// "string"</span>
+<span class="function">typeof</span> <span class="keyword">true</span>;            <span class="comment">// "boolean"</span>
+<span class="function">typeof</span> <span class="keyword">undefined</span>;        <span class="comment">// "undefined"</span>
+<span class="function">typeof</span> <span class="keyword">null</span>;            <span class="comment">// "object" (известный баг!)</span>
+<span class="function">typeof</span> [];               <span class="comment">// "object"</span>
+<span class="function">typeof</span> {};               <span class="comment">// "object"</span>
+<span class="function">typeof</span> <span class="function">function</span>() {};   <span class="comment">// "function"</span>
+
+<span class="comment">// instanceof - проверяет, является ли объект экземпляром класса</span>
+[] <span class="keyword">instanceof</span> <span class="function">Array</span>;      <span class="comment">// true</span>
+{} <span class="keyword">instanceof</span> <span class="function">Object</span>;     <span class="comment">// true</span>
+
+<span class="comment">// Array.isArray() - лучший способ проверить массив</span>
+<span class="function">Array</span>.<span class="function">isArray</span>([]);       <span class="comment">// true</span>
+<span class="function">Array</span>.<span class="function">isArray</span>({});       <span class="comment">// false</span>
+
+<span class="comment">// Оператор in - проверяет наличие свойства в объекте</span>
+<span class="string">"length"</span> <span class="keyword">in</span> [];         <span class="comment">// true</span>
+<span class="string">"name"</span> <span class="keyword">in</span> {<span class="variable">name</span>: <span class="string">"Иван"</span>};  <span class="comment">// true</span></code></pre>
+        </div>
+
         <div class="tip">
-            <strong>Совет:</strong> Используйте <code>typeof</code> для проверки типа переменной, но помните, что <code>typeof null</code> вернет <code>"object"</code> (это известный баг JavaScript).
+            <strong>Совет:</strong> Используйте <code>typeof</code> для проверки типа переменной, но помните, что <code>typeof null</code> вернет <code>"object"</code> (это известный баг JavaScript). Для массивов используйте <code>Array.isArray()</code>.
         </div>
     </div>
 
@@ -102,10 +175,47 @@
 <span class="variable">a</span> % <span class="variable">b</span>;  <span class="comment">// 1 (остаток от деления)</span>
 <span class="variable">a</span> ** <span class="variable">b</span>;  <span class="comment">// 1000 (возведение в степень)</span>
 
-<span class="variable">a</span>++;  <span class="comment">// Инкремент (увеличивает на 1)</span>
-<span class="variable">a</span>--;  <span class="comment">// Декремент (уменьшает на 1)</span>
-<span class="variable">++a</span>;  <span class="comment">// Префиксный инкремент</span>
-<span class="variable">--a</span>;  <span class="comment">// Префиксный декремент</span></code></pre>
+<span class="comment">// Инкремент и декремент</span>
+<span class="variable">a</span>++;  <span class="comment">// Постфиксный инкремент (возвращает старое значение, затем увеличивает)</span>
+<span class="variable">a</span>--;  <span class="comment">// Постфиксный декремент (возвращает старое значение, затем уменьшает)</span>
+<span class="variable">++a</span>;  <span class="comment">// Префиксный инкремент (увеличивает, затем возвращает новое значение)</span>
+<span class="variable">--a</span>;  <span class="comment">// Префиксный декремент (уменьшает, затем возвращает новое значение)</span>
+
+<span class="comment">// Пример разницы:</span>
+<span class="keyword">let</span> <span class="variable">x</span> = <span class="number">5</span>;
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">x</span>++);  <span class="comment">// 5 (возвращает старое значение)</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">x</span>);     <span class="comment">// 6 (теперь x = 6)</span>
+
+<span class="keyword">let</span> <span class="variable">y</span> = <span class="number">5</span>;
+<span class="function">console</span>.<span class="function">log</span>(++<span class="variable">y</span>);  <span class="comment">// 6 (увеличивает и возвращает новое значение)</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">y</span>);     <span class="comment">// 6</span>
+
+<span class="comment">// Проблема с числами с плавающей точкой</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="number">0.1</span> + <span class="number">0.2</span> === <span class="number">0.3</span>);  <span class="comment">// false!</span>
+<span class="comment">// Из-за особенностей представления чисел: 0.1 + 0.2 ≈ 0.30000000000000004</span>
+<span class="comment">// Для сравнения используйте округление или библиотеки для работы с числами</span></code></pre>
+        </div>
+
+        <h3>Операторы присваивания</h3>
+        <div class="code-block">
+            <pre><code><span class="keyword">let</span> <span class="variable">x</span> = <span class="number">5</span>;
+
+<span class="variable">x</span> = <span class="number">10</span>;   <span class="comment">// Простое присваивание</span>
+<span class="variable">x</span> += <span class="number">3</span>;   <span class="comment">// x = x + 3 (результат: 8)</span>
+<span class="variable">x</span> -= <span class="number">2</span>;   <span class="comment">// x = x - 2</span>
+<span class="variable">x</span> *= <span class="number">2</span>;   <span class="comment">// x = x * 2</span>
+<span class="variable">x</span> /= <span class="number">2</span>;   <span class="comment">// x = x / 2</span>
+<span class="variable">x</span> %= <span class="number">3</span>;   <span class="comment">// x = x % 3</span>
+<span class="variable">x</span> **= <span class="number">2</span>;  <span class="comment">// x = x ** 2</span>
+
+<span class="comment">// Nullish coalescing assignment (ES2021)</span>
+<span class="keyword">let</span> <span class="variable">value</span> = <span class="keyword">null</span>;
+<span class="variable">value</span> ??= <span class="string">"default"</span>;  <span class="comment">// Присваивает только если value null или undefined</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">value</span>);  <span class="comment">// "default"</span>
+
+<span class="keyword">let</span> <span class="variable">num</span> = <span class="number">0</span>;
+<span class="variable">num</span> ??= <span class="number">10</span>;  <span class="comment">// Не присвоит, так как 0 не null/undefined</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">num</span>);  <span class="comment">// 0</span></code></pre>
         </div>
 
         <h3>Операторы сравнения</h3>
@@ -132,13 +242,75 @@
             <pre><code><span class="keyword">const</span> <span class="variable">isAdult</span> = <span class="keyword">true</span>;
 <span class="keyword">const</span> <span class="variable">hasLicense</span> = <span class="keyword">false</span>;
 
-<span class="variable">isAdult</span> && <span class="variable">hasLicense</span>;  <span class="comment">// false (И)</span>
-<span class="variable">isAdult</span> || <span class="variable">hasLicense</span>;  <span class="comment">// true (ИЛИ)</span>
-!<span class="variable">isAdult</span>;                 <span class="comment">// false (НЕ)</span>
+<span class="variable">isAdult</span> && <span class="variable">hasLicense</span>;  <span class="comment">// false (И) - возвращает последнее truthy или первое falsy</span>
+<span class="variable">isAdult</span> || <span class="variable">hasLicense</span>;  <span class="comment">// true (ИЛИ) - возвращает первое truthy или последнее falsy</span>
+!<span class="variable">isAdult</span>;                 <span class="comment">// false (НЕ) - инвертирует значение</span>
 
 <span class="comment">// Короткая схема вычислений (short-circuit)</span>
 <span class="variable">isAdult</span> && <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Взрослый"</span>);
-<span class="variable">hasLicense</span> || <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Нет лицензии"</span>);</code></pre>
+<span class="variable">hasLicense</span> || <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Нет лицензии"</span>);
+
+<span class="comment">// Примеры возвращаемых значений</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="keyword">true</span> && <span class="string">"text"</span>);   <span class="comment">// "text" (возвращает второй операнд)</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="keyword">false</span> || <span class="string">"text"</span>);  <span class="comment">// "text" (возвращает второй операнд)</span>
+<span class="function">console</span>.<span class="function">log</span>(!<span class="number">0</span>);              <span class="comment">// true (0 это falsy, !0 = true)</span>
+<span class="function">console</span>.<span class="function">log</span>(!!<span class="string">"text"</span>);         <span class="comment">// true (двойное отрицание преобразует в boolean)</span></code></pre>
+        </div>
+
+        <h3>Дополнительные операторы</h3>
+        <div class="code-block">
+            <pre><code><span class="comment">// Оператор void - всегда возвращает undefined</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="keyword">void</span> <span class="number">0</span>);        <span class="comment">// undefined</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="keyword">void</span> <span class="string">"text"</span>);   <span class="comment">// undefined</span>
+
+<span class="comment">// Оператор запятой - вычисляет оба операнда, возвращает второй</span>
+<span class="function">console</span>.<span class="function">log</span>((<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>));  <span class="comment">// 3 (возвращает последнее значение)</span>
+
+<span class="comment">// Оператор new - создает новый экземпляр объекта</span>
+<span class="keyword">const</span> <span class="variable">date</span> = <span class="keyword">new</span> <span class="function">Date</span>();
+
+<span class="comment">// Оператор delete - удаляет свойство объекта</span>
+<span class="keyword">const</span> <span class="variable">obj</span> = {<span class="variable">a</span>: <span class="number">1</span>, <span class="variable">b</span>: <span class="number">2</span>};
+<span class="keyword">delete</span> <span class="variable">obj</span>.<span class="variable">a</span>;
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">obj</span>.<span class="variable">a</span>);  <span class="comment">// undefined</span>
+<span class="comment">// Нельзя удалить переменные, объявленные через var/let/const</span>
+
+<span class="comment">// Optional chaining (?.) - безопасный доступ к свойствам</span>
+<span class="keyword">const</span> <span class="variable">user</span> = <span class="keyword">null</span>;
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">user</span>?.<span class="variable">name</span>);  <span class="comment">// undefined (не вызывает ошибку)</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">user</span>?.[<span class="string">"name"</span>]);  <span class="comment">// undefined</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="variable">user</span>?.<span class="function">getName</span>?.());  <span class="comment">// undefined</span>
+
+<span class="comment">// Nullish coalescing (??) - возвращает правый операнд только для null/undefined</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="keyword">null</span> ?? <span class="string">"default"</span>);     <span class="comment">// "default"</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="keyword">undefined</span> ?? <span class="string">"default"</span>);  <span class="comment">// "default"</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="number">0</span> ?? <span class="string">"default"</span>);        <span class="comment">// 0 (0 не null/undefined)</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">""</span> ?? <span class="string">"default"</span>);        <span class="comment">// "" (пустая строка не null/undefined)</span>
+<span class="comment">// В отличие от ||, ?? проверяет только null и undefined</span></code></pre>
+        </div>
+
+        <h3>Приоритет и ассоциативность операторов</h3>
+        <div class="code-block">
+            <pre><code><span class="comment">// Приоритет определяет порядок выполнения операций</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="number">2</span> + <span class="number">3</span> * <span class="number">4</span>);  <span class="comment">// 14 (умножение имеет больший приоритет)</span>
+<span class="comment">// Эквивалентно: 2 + (3 * 4) = 2 + 12 = 14</span>
+
+<span class="comment">// Скобки изменяют приоритет</span>
+<span class="function">console</span>.<span class="function">log</span>((<span class="number">2</span> + <span class="number">3</span>) * <span class="number">4</span>);  <span class="comment">// 20</span>
+
+<span class="comment">// Ассоциативность определяет направление вычисления при одинаковом приоритете</span>
+<span class="comment">// Большинство операторов левоассоциативны (слева направо)</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="number">10</span> - <span class="number">3</span> - <span class="number">2</span>);  <span class="comment">// 5 (слева направо: (10-3)-2)</span>
+
+<span class="comment">// Некоторые операторы правоассоциативны (справа налево)</span>
+<span class="keyword">let</span> <span class="variable">a</span>, <span class="variable">b</span>, <span class="variable">c</span>;
+<span class="variable">a</span> = <span class="variable">b</span> = <span class="variable">c</span> = <span class="number">5</span>;  <span class="comment">// Присваивание правоассоциативно</span>
+<span class="comment">// Эквивалентно: a = (b = (c = 5))</span>
+
+<span class="comment">// Типы операторов по количеству операндов:</span>
+<span class="comment">// Унарные (1 операнд): ++x, --x, !x, typeof x, -x, +x</span>
+<span class="comment">// Бинарные (2 операнда): +, -, *, /, ==, ===, &&, ||</span>
+<span class="comment">// Тернарные (3 операнда): условие ? значение1 : значение2</span></code></pre>
         </div>
     </div>
 
@@ -176,13 +348,25 @@
     <span class="keyword">case</span> <span class="string">"четверг"</span>:
     <span class="keyword">case</span> <span class="string">"пятница"</span>:
         <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Рабочий день"</span>);
-        <span class="keyword">break</span>;
+        <span class="keyword">break</span>;  <span class="comment">// Важно! Без break выполнение "провалится" в следующий case</span>
     <span class="keyword">case</span> <span class="string">"суббота"</span>:
     <span class="keyword">case</span> <span class="string">"воскресенье"</span>:
         <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Выходной"</span>);
         <span class="keyword">break</span>;
-    <span class="keyword">default</span>:
+    <span class="keyword">default</span>:  <span class="comment">// Выполняется, если ни один case не совпал</span>
         <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Неизвестный день"</span>);
+}
+
+<span class="comment">// Fall-through (проваливание) - выполнение нескольких case подряд</span>
+<span class="keyword">const</span> <span class="variable">num</span> = <span class="number">2</span>;
+<span class="keyword">switch</span> (<span class="variable">num</span>) {
+    <span class="keyword">case</span> <span class="number">1</span>:
+    <span class="keyword">case</span> <span class="number">2</span>:
+    <span class="keyword">case</span> <span class="number">3</span>:
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Меньше 4"</span>);  <span class="comment">// Выполнится для 1, 2, 3</span>
+        <span class="keyword">break</span>;
+    <span class="keyword">default</span>:
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">"4 или больше"</span>);
 }</code></pre>
         </div>
     </div>
@@ -244,6 +428,34 @@
         <span class="keyword">continue</span>;  <span class="comment">// Пропускаем четные числа</span>
     }
     <span class="function">console</span>.<span class="function">log</span>(<span class="variable">i</span>);  <span class="comment">// Только нечетные</span>
+}
+
+<span class="comment">// Label - метка для break/continue во вложенных циклах</span>
+<span class="variable">outer</span>: <span class="keyword">for</span> (<span class="keyword">let</span> <span class="variable">i</span> = <span class="number">0</span>; <span class="variable">i</span> &lt; <span class="number">3</span>; <span class="variable">i</span>++) {
+    <span class="keyword">for</span> (<span class="keyword">let</span> <span class="variable">j</span> = <span class="number">0</span>; <span class="variable">j</span> &lt; <span class="number">3</span>; <span class="variable">j</span>++) {
+        <span class="keyword">if</span> (<span class="variable">i</span> === <span class="number">1</span> && <span class="variable">j</span> === <span class="number">1</span>) {
+            <span class="keyword">break</span> <span class="variable">outer</span>;  <span class="comment">// Выходим из внешнего цикла</span>
+        }
+    }
+}
+
+<span class="comment">// Бесконечный цикл</span>
+<span class="comment">// while(true) { ... }</span>
+<span class="comment">// for(;;) { ... }</span>
+<span class="comment">// Обычно используется с break внутри</span>
+<span class="keyword">let</span> <span class="variable">count</span> = <span class="number">0</span>;
+<span class="keyword">while</span> (<span class="keyword">true</span>) {
+    <span class="variable">count</span>++;
+    <span class="keyword">if</span> (<span class="variable">count</span> &gt;= <span class="number">5</span>) {
+        <span class="keyword">break</span>;  <span class="comment">// Выход из бесконечного цикла</span>
+    }
+}
+
+<span class="comment">// Вложенные циклы</span>
+<span class="keyword">for</span> (<span class="keyword">let</span> <span class="variable">i</span> = <span class="number">0</span>; <span class="variable">i</span> &lt; <span class="number">3</span>; <span class="variable">i</span>++) {
+    <span class="keyword">for</span> (<span class="keyword">let</span> <span class="variable">j</span> = <span class="number">0</span>; <span class="variable">j</span> &lt; <span class="number">3</span>; <span class="variable">j</span>++) {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="variable">i</span>, <span class="variable">j</span>);  <span class="comment">// Полезно для многомерных массивов</span>
+    }
 }</code></pre>
         </div>
     </div>
